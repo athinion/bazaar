@@ -1,4 +1,4 @@
-package basilica2.accountable.operation;
+package basilica2.mai.operation;
 
 import java.awt.Point;
 import java.io.File;
@@ -13,7 +13,7 @@ import basilica2.agents.operation.BaseAgentOperation;
 import basilica2.agents.operation.BaseAgentUI;
 import basilica2.agents.operation.ConditionAgentUI;
 
-public class AccountableAgentOperation extends BaseAgentOperation
+public class MAIAgentOperation extends BaseAgentOperation
 {
     public static void main(final String[] args) 
     {
@@ -25,7 +25,7 @@ public class AccountableAgentOperation extends BaseAgentOperation
             @Override
             public void run() 
             {
-            	AccountableAgentOperation thisOperation = new AccountableAgentOperation();
+            	MAIAgentOperation thisOperation = new MAIAgentOperation();
                 BaseAgentUI thisUI = new ConditionAgentUI(thisOperation, "Test1");
                 //thisUI.setLocation(windowLoc);
                 thisOperation.setUI(thisUI);

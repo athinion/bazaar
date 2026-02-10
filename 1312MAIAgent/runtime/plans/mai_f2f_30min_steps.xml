@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plan name="bio_winter_2011">
+<plan name="mai_f2f_30min_steps">
 
 <!-- if PromptStepHandler has the rate_limited property set (default=true), the "delay" value 
 does not need to include reading time - only additional response/waiting time -->
