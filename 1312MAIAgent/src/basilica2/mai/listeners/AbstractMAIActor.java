@@ -42,8 +42,8 @@ public abstract class AbstractMAIActor extends BasilicaAdapter
 	protected static final double WINDOW_BUFFER = 0.1;
 	protected static final String AT_MOVE = "AT_MOVE";
 	protected static final String SOURCE_NAME = "MAI";
-	// protected static final int HISTORY_WINDOW = 60 * 90;
-	protected static final int HISTORY_WINDOW = 300; // is history window in minutes?
+	
+	protected static final int HISTORY_WINDOW = 300; // define history window
 
 	protected double feedbackWindow = 30;
 	protected double candidateWindow = 10;
