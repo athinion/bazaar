@@ -1,4 +1,4 @@
-package basilica2.accountable.listeners;
+package basilica2.mai.listeners;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Scanner;
-
-import javax.swing.JFileChooser;
 
 import basilica2.agents.components.InputCoordinator;
 import basilica2.agents.components.OutputCoordinator;
@@ -30,14 +28,22 @@ import edu.cmu.cs.lti.basilica2.core.Event;
 import edu.cmu.cs.lti.project911.utils.log.Logger;
 import edu.cmu.cs.lti.project911.utils.time.Timer;
 
-public abstract class AbstractAccountableActor extends BasilicaAdapter
+//The original AbstractAccountableActor is a pedagogical engine
+// does candidate detection, NLP matching, RollingWindow analysis, timing decisions, prompt generation, feedback recording
+// extends BasilicaAdapter to get access to event processing and proposal system, but is not itself a listener in the traditional sense - it doesn't directly listen for events, but rather provides methods that can be called by a listener (in this case, MAIActor) when certain conditions are met.
+
+public abstract class AbstractMAIActor extends BasilicaAdapter
 {
 
+	/*
+	
+	
+	*/
 	protected static final double WINDOW_BUFFER = 0.1;
 	protected static final String AT_MOVE = "AT_MOVE";
-	protected static final String SOURCE_NAME = "AccountableTalk";
+	protected static final String SOURCE_NAME = "MAI";
 	// protected static final int HISTORY_WINDOW = 60 * 90;
-	protected static final int HISTORY_WINDOW = 5;
+	protected static final int HISTORY_WINDOW = 300; // is history window in minutes?
 
 	protected double feedbackWindow = 30;
 	protected double candidateWindow = 10;
@@ -71,9 +77,11 @@ public abstract class AbstractAccountableActor extends BasilicaAdapter
 	protected HashMap<String, Integer> studentScores = new HashMap<String, Integer>();
 	protected int teamScore = 0;
 
+	protected PromptTable maiPromptsEn;
+	protected PromptTable maiPromptsFin;
 	protected String status = "";
 
-	protected PromptTable accountablePrompts;
+	//protected PromptTable accountablePrompts;
 	protected ArrayList<String> candidates = new ArrayList<String>();
 	protected ArrayList<String> topicWords = new ArrayList<String>();
 	protected SynonymSentenceMatcher sentenceMatcher;
@@ -83,38 +91,55 @@ public abstract class AbstractAccountableActor extends BasilicaAdapter
 
 	protected String classPath = this.getClass().getName(); 
 
-	public AbstractAccountableActor(Agent a)
+	public AbstractMAIActor(Agent a)
 	{
+		// Registers this as BasilicaAdapter listener with "MAI" source name
 		super(a, SOURCE_NAME);
 
+		// Reads experiment condition (which actors are enabled)
 		String condition = System.getProperty("basilica2.agents.condition", "feedback revoice agree remind social cooperate accountable_talk");
-		System.err.println("AbstractAccountableAgent, condition = " + condition); 
+		System.err.println("AbstractMAIAgent, condition = " + condition); 
 		Properties actorProperties = getProperties();
+
+		 // Only activate if experiment condition includes this actor
 		String conditionFlag = actorProperties.getProperty("condition_flag", "accountable_talk");
 		conditionActive = condition.contains(conditionFlag);
+		
 		log(Logger.LOG_NORMAL, conditionFlag + " condition: " + conditionActive);
-		// RollingWindow.sharedWindow().setWindowSize(HISTORY_WINDOW, 20);
+		
+		
+		 // Configure RollingWindow history size + purge interval
 		RollingWindow.sharedWindow().setWindowSize(HISTORY_WINDOW, 2);
 
 		try
 		{
-			String expertPath = actorProperties.getProperty("expert_statement_file", "accountable/exemplar_statements.txt");
-			String dictionaryPath = actorProperties.getProperty("synonym_file", "accountable/synonyms.txt");
-			String contentDictionaryPath = actorProperties.getProperty("content_synonym_file", "accountable/content_synonyms.txt");
-			String stopwordsPath = actorProperties.getProperty("stopwords_file", "stopwords.txt");
-			topicWordPath = properties.getProperty("topic_word_file", topicWordPath);
-			loadExpertStatements(expertPath);
-			loadTopicWords(topicWordPath);
+			// Load prompt templates
+			maiPromptsEn = new PromptTable(properties.getProperty("intervention_prompts_en_file", "intervention_prompts_en.xml"));
+			maiPromptsFin = new PromptTable(properties.getProperty("intervention_prompts_fin_file", "intervention_prompts_fin.xml"));
+			
+			// Load dictionaries
+			String connPath = actorProperties.getProperty("expert_statement_file", "accountable/exemplar_statements.txt");
+			String cooPath = actorProperties.getProperty("synonym_file", "accountable/synonyms.txt");
+			String ipPath = actorProperties.getProperty("content_synonym_file", "accountable/content_synonyms.txt");
+			String nePath = actorProperties.getProperty("stopwords_file", "stopwords.txt");
+			String offtaskPath = actorProperties.getProperty("expert_statement_file", connPath);
 
-			accountablePrompts = new PromptTable(properties.getProperty("accountable_prompt_file", "accountable/accountable_prompts.xml"));
-			sentenceMatcher = new SynonymSentenceMatcher(contentDictionaryPath, stopwordsPath);
-			sentenceMatcher.addDictionary(dictionaryPath, false);
-			sentenceMatcher.enableWordNet(actorProperties.getProperty("use_wordnet", "false").contains("true"));
+			//topicWordPath = properties.getProperty("topic_word_file", topicWordPath);
+			//loadExpertStatements(expertPath);
+			//loadTopicWords(topicWordPath);
 
+			// Setup NLP matcher and optionally enable WordNet
+			//sentenceMatcher = new SynonymSentenceMatcher(contentDictionaryPath, stopwordsPath);
+			//sentenceMatcher.addDictionary(dictionaryPath, false);
+			//sentenceMatcher.enableWordNet(actorProperties.getProperty("use_wordnet", "false").contains("true"));
+
+			// Load behavioral thresholds from properties
 			minimumMatch = Double.parseDouble(properties.getProperty("minimum_match", "0.6"));
 			feedbackWindow = Double.parseDouble(properties.getProperty("feedback_window", "60"));
 			candidateWindow = Double.parseDouble(properties.getProperty("candidate_window", "10"));
 			blackoutTimeout = Double.parseDouble(properties.getProperty("blackout_timeout", "15.0"));
+
+
 			priorityEventTimeout = Double.parseDouble(properties.getProperty("priority_event_timeout", String.valueOf(priorityEventTimeout)));
 			// System.err.println("AbstractAccountableActor, priorityEventTimeout = " + String.valueOf(priorityEventTimeout));
 			priorityEventExpiration = Double.parseDouble(properties.getProperty("priority_event_expiration", String.valueOf(priorityEventExpiration)));
@@ -129,6 +154,7 @@ public abstract class AbstractAccountableActor extends BasilicaAdapter
 			targetRatio = Double.parseDouble(properties.getProperty("target_ratio", "" + targetRatio));
 			skipRatio = Double.parseDouble(properties.getProperty("skip_ratio", "" + skipRatio));
 
+			// Labels considered productive → suppress intervention if detected in check window
 			productiveStudentTurns = actorProperties.getProperty("productive_student_turns",
 					"AGREE DISAGREE CHALLENGE_CONTRIBUTION QUESTION CONTENT REVOICABLE" + candidateLabel).split("\\s");
 			productiveFollowupTurns = actorProperties.getProperty("productive_followup_turns", "EXPLANATION_CONTRIBUTION CONTENT REVOICABLE" + candidateLabel)
@@ -137,7 +163,7 @@ public abstract class AbstractAccountableActor extends BasilicaAdapter
 		}
 		catch (Exception e)
 		{
-			System.err.println("couldn't parse AccountableActor properties file:" + e.getMessage());
+			System.err.println("couldn't parse MAIActor properties file:" + e.getMessage());
 		}
 	}
 
@@ -287,10 +313,10 @@ public abstract class AbstractAccountableActor extends BasilicaAdapter
 								@Override
 								public void timedOut(String id)
 								{
-									AbstractAccountableActor.this.log(Logger.LOG_NORMAL, "checking for " + promptLabel + " opportunity");
+									AbstractMAIActor.this.log(Logger.LOG_NORMAL, "checking for " + promptLabel + " opportunity");
 									if (RollingWindow.sharedWindow().countAnyEvents(candidateWindow - WINDOW_BUFFER, productiveStudentTurns) < 1)
 									{
-										AbstractAccountableActor.this.log(Logger.LOG_NORMAL, "proposing " + promptLabel + " move...");
+										AbstractMAIActor.this.log(Logger.LOG_NORMAL, "proposing " + promptLabel + " move...");
 										makeAccountableProposal(event, match);
 									}
 									else if (RollingWindow.sharedWindow().countAnyEvents(candidateWindow - WINDOW_BUFFER, productiveFollowupTurns) < 1)
@@ -472,7 +498,7 @@ public abstract class AbstractAccountableActor extends BasilicaAdapter
 		return status;
 	}
 
-	public static void test(AbstractAccountableActor revoicer, String file, int verbosity)
+	public static void test(AbstractMAIActor revoicer, String file, int verbosity)
 	{
 		System.out.println("testing '" + file + "'...");
 		try
@@ -588,7 +614,7 @@ public abstract class AbstractAccountableActor extends BasilicaAdapter
 
 	public static void main(String[] args) throws Exception
 	{
-		AbstractAccountableActor revoicer = new RevoiceActor(null);
+		AbstractMAIActor revoicer = new RevoiceActor(null);
 
 		// JFileChooser chooser = new JFileChooser();
 		// int result = chooser.showOpenDialog(null);

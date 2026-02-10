@@ -1,11 +1,11 @@
-package basilica2.accountable.listeners;
+package basilica2.mai.listeners;
 
 import basilica2.agents.data.RollingWindow;
 import basilica2.agents.events.MessageEvent;
 import edu.cmu.cs.lti.basilica2.core.Agent;
 import edu.cmu.cs.lti.project911.utils.log.Logger;
 
-public class MAIActor extends AbstractAccountableActor
+public class MAIActor extends AbstractMAIActor
 {
 	public MAIActor(Agent a)
 	{

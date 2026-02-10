@@ -1,10 +1,10 @@
-package basilica2.accountable.listeners;
+package basilica2.mai.listeners;
 
 import basilica2.agents.components.InputCoordinator;
 import basilica2.agents.listeners.plan.PlanExecutor;
 import basilica2.agents.listeners.plan.Step;
 import basilica2.agents.listeners.plan.StepHandler;
-import basilica2.mai.listeners.MAIActor;
+import basilica2.mai.listeners.ToDeleteMAIActor;
 import basilica2.social.listeners.RuleBasedTriggerComputer;
 import basilica2.social.listeners.SocialController;
 import basilica2.social.listeners.StrategyScoreComputer;
