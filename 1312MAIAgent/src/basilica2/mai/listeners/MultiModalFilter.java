@@ -199,39 +199,6 @@ public class MultiModalFilter extends BasilicaAdapter
 					System.out.println("MultiModalFilter.handleMessageEvent - >>> Unhandled multimodal tag: " + messagePart[0] + "<<<");
 				}
 			}
-			
-			// Process speech
-			if (processSpeech) {				
-				// So that the agent doesn't hear itself, ignore speech heard while the agent is speaking 
-				if (dontListenWhileSpeaking) {
-					
-					LocalDateTime now = LocalDateTime.now();
-					LocalDateTime dontListenWhileSpeakingEnd = currentState.getMultimodalDontListenWhileSpeakingEnd(); 
-//					System.err.println("MultimodalFilter handleMessageEvent: now = " + now.toString());
-					if (dontListenWhileSpeakingEnd != null) {
-//						System.err.println("MultimodalFilter handleMessageEvent: dontListenWhileSpeakingEnd = " + dontListenWhileSpeakingEnd.toString());
-						if (now.isBefore(dontListenWhileSpeakingEnd)) {
-//							System.err.println("MultimodalFilter handleMessageEvent: QUASHING speech input");
-							me.invalidate();
-							return; 
-						} else {
-//							System.err.println("MultimodalFilter handleMessageEvent: NOT quashing speech input");
-						}
-					} else {
-//						System.err.println("MultimodalFilter handleMessageEvent: dontListenWhileSpeakingEnd = NULL");
-//						System.err.println("MultimodalFilter handleMessageEvent: NOT quashing speech input");
-					}
-				}
-			}
-			
-			// Process pose
-			if (pose != null) {
-				poseUpdate(source,me,pose,location); 
-//				me.addAnnotation(pose.toString(), null);
-				List<String> EmptyList = Collections.<String>emptyList();
-				me.addAnnotation("POSE_HANDRAISE", EmptyList);
-			}
-			
 		}  
     }
 		
@@ -249,13 +216,7 @@ public class MultiModalFilter extends BasilicaAdapter
 		}
 	}
             
-	
-	private void poseUpdate(final InputCoordinator source, MessageEvent me, poseEventType poseType, String location)
-	{
-		System.err.println("MultiModalFilter.poseUpdate -- from: " + me.getFrom() + " -- pose: " + poseType.toString() + " -- location: " + location); 
-		PoseEvent poseE = new PoseEvent(source,me.getFrom(),poseType, location);
-		source.pushEvent(poseE);
-	}
+
 
 	private void locationUpdate(InputCoordinator source, MessageEvent me, String location)
 	{		

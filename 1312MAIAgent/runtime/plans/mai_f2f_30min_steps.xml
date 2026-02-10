@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plan name="mai_f2f_30min_steps">
 
+
+<!-- "delay" on a step is the delay *after* the step completes, in seconds. do not be deceived!-->
     <stage name="session" timeout="1">
-        <step type="silence" timeout="300" delay="10">SILENCE</step>
+        <step type="silence" timeout="300">SILENCE</step>
         <step type="listen"    delay="2">LISTEN</step>
         <step type="prompt"    delay="2" timeout="1000">END_OF_SESSION</step>
         <step type="chatlog"    delay="2" timeout="1000">CHATLOG</step>
