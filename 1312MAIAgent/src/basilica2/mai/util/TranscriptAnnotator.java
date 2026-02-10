@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import basilica2.accountable.listeners.AgreeDisagreeActor;
+import basilica2.accountable.listeners.MAIActor;
 import basilica2.accountable.listeners.RevoiceActor;
 import basilica2.agents.events.MessageEvent;
 import basilica2.agents.listeners.MessageAnnotator;
@@ -20,13 +20,16 @@ import basilica2.util.MessageEventLogger;
 import edu.cmu.cs.lti.project911.utils.log.LogUser;
 import edu.cmu.cs.lti.project911.utils.log.Logger;
 
+
+// to be defined if we need this file or not
+
 public class TranscriptAnnotator
 {
 
 	private static DateFormat transcriptFormat = new SimpleDateFormat("hh.mm.ss");
 	private static MessageAnnotator mickey = new MessageAnnotator();
 	private static RevoiceActor ricky = new RevoiceActor(null);
-	private static AgreeDisagreeActor albert = new AgreeDisagreeActor(null);
+	private static MAIActor albert = new MAIActor(null);
 	private static Logger logger = new Logger(new LogUser()
 	{
 

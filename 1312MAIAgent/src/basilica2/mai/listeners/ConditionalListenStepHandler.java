@@ -4,6 +4,7 @@ import basilica2.agents.components.InputCoordinator;
 import basilica2.agents.listeners.plan.PlanExecutor;
 import basilica2.agents.listeners.plan.Step;
 import basilica2.agents.listeners.plan.StepHandler;
+import basilica2.mai.listeners.MAIActor;
 import basilica2.social.listeners.RuleBasedTriggerComputer;
 import basilica2.social.listeners.SocialController;
 import basilica2.social.listeners.StrategyScoreComputer;
@@ -15,26 +16,23 @@ import edu.cmu.cs.lti.project911.utils.log.Logger;
 public class ConditionalListenStepHandler implements StepHandler
 {
 
-	private RevoiceActor revoicer = null;
-	private SocialController socializer = null;
-	private StrategyScoreComputer scoreComputer = null;
+	private MAIActor mai = null;
+	//private SocialController socializer = null;
+	//private StrategyScoreComputer scoreComputer = null;
 	private RuleBasedTriggerComputer triggerComputer = null;
 //	private FeedbackActor feedbacker = null;
-	private AgreeDisagreeActor agreer = null;
-	private MissingTopicReactor reminder = null;
+	//private AgreeDisagreeActor agreer = null;
+	//private MissingTopicReactor reminder = null;
 	
 	private String condition;
-	private boolean doSocial, doFeedback, doRevoice, doAgree, doRemind;
+	private boolean doMai;
 
 	public ConditionalListenStepHandler()
 	{
-		condition = System.getProperty("basilica2.agents.condition", "feedback revoice agree remind social");
+		condition = System.getProperty("basilica2.agents.condition", "metacognitive cognitive behavioral socioemotional shared_perspective");
 
-		doFeedback = condition.contains("feedback");
-		doRevoice = condition.contains("revoice");
-		doSocial = condition.contains("social");
-		doAgree = condition.contains("agree");
-		doRemind = condition.contains("remind");
+		doMai = condition.contains("metacognitive cognitive behavioral socioemotional shared_perspective");
+
 	}
 	
 	@Override
@@ -43,25 +41,11 @@ public class ConditionalListenStepHandler implements StepHandler
 		Logger.commonLog("ConditionalListenStep", Logger.LOG_NORMAL, "starting facilitation step with condition "+condition);
 
 		Agent a = overmind.getAgent();
-		if (doSocial && socializer == null)
+		if (doMai)
 		{
-			socializer = new SocialController(a);
-			scoreComputer = new StrategyScoreComputer(a);
-			triggerComputer = new RuleBasedTriggerComputer(a);
-		}
-		if(doRevoice && revoicer == null)
-		{
-			revoicer = new RevoiceActor(a);
-		}
-		
-		if(doRemind && reminder == null)
-		{
-			reminder = new MissingTopicReactor(a);
-		}
-		
-		if(doAgree && agreer == null)
-		{
-			agreer = new AgreeDisagreeActor(a);
+			mai = new MAIActor(a);
+			//scoreComputer = new StrategyScoreComputer(a);
+			//triggerComputer = new RuleBasedTriggerComputer(a);
 		}
 //		
 //		if(doFeedback && feedbacker == null)
@@ -73,15 +57,14 @@ public class ConditionalListenStepHandler implements StepHandler
 		// currentStep.name));
 
 //		if (doFeedback) overmind.addHelper(feedbacker);
-		if (doRevoice)  overmind.addHelper(revoicer);
-		if (doRemind) overmind.addHelper(reminder);
-		if (doAgree) overmind.addHelper(agreer);
-		if (doSocial)
+		if (doMai)  overmind.addHelper(mai);
+
+		/*if (doSocial)
 		{
 			overmind.addHelper(scoreComputer);
 			overmind.addHelper(triggerComputer);
 			overmind.addHelper(socializer);
-		}
+		} */
 
 		if(currentStep.attributes.containsKey("duration"))
 			new Timer(Long.parseLong(currentStep.attributes.get("duration")), null, new TimeoutAdapter()
