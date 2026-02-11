@@ -1,22 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<agent name="Mai">
+<agent name="MAI">
     <components>
-        
+        <!-- State memory for shared state across components -->
         <component name="stateMemory" type="Memory" class="basilica2.agents.components.StateMemory" properties=""/>
+        
 
-        <component name="ccListener" type="Filter" class="basilica2.agents.components.ConcertChatListener" properties=""/>
-
+         <!-- PENDING: TranscriptReader OR another listener needed here -->
+        <component name="transcriptReader" type="Filter" class="basilica2.mai.listeners.TranscriptReader" properties="properties/TranscriptReader.properties"/>
+        
+        <!-- PENDING: Output component / we don't want WhiteboardActor here -->
+        <component name="outputActor" type="Actor" class="basilica2.agents.components.WhiteboardActor" properties=""/>
+        
         <component name="inputCoordinator" type="Coordinator" class="basilica2.agents.components.InputCoordinator" properties=""/>
         <component name="outputCoordinator" type="Coordinator" class="basilica2.agents.components.OutputCoordinator" properties=""/>
-
     </components>
+    
     <connections>
-        <connection from="ccListener" to="inputCoordinator"/>
-        <connection from="inputCoordinator" to="inputCoordinator"></connection><connection from="inputCoordinator" to="outputCoordinator"></connection>
-        <connection from="outputCoordinator" to="ccActor"/>
-        <!--
-        <connection from="myCCListener" to="myOutputCordinator"/>
-        <connection from="myOutputCordinator" to="myCCActor"/>
-        -->
+        <!-- TranscriptReader → InputCoordinator: injects transcript messages -->
+        <connection from="transcriptReader" to="inputCoordinator"/>
+        
+        <!-- InputCoordinator processes events (preprocessors run here) -->
+        <connection from="inputCoordinator" to="inputCoordinator"/>
+        
+        <!-- InputCoordinator → OutputCoordinator: passes processed messages -->
+        <connection from="inputCoordinator" to="outputCoordinator"/>
+        
+        <!-- OutputCoordinator → OutputActor: sends prompts to display -->
+        <connection from="outputCoordinator" to="outputActor"/>
     </connections>
 </agent>

@@ -87,7 +87,6 @@ laptop
 computer
 simulation
 browser
-
 everyone
 for everyone
 to everyone
@@ -102,20 +101,16 @@ all tools
 neatly into
 put away
 clean up
-
-\b(read|measure|pour|put|place|lower|hold|take|bring|fetch|get|give|move|open|close|write|note|explain|describe|investigate|return|carry out)\b
-\b(let'?s|lets)\s+\w+
-\b(we\s+(need|should|have)\s+to)\b
-\b(you\s+have\s+to)\b
-\b(can\s+you)\s+\w+
-\b(do\s+you\s+want\s+to)\s+\w+
-\b(someone(\s+else)?\s+(can|get|fetch|bring|measure|read))\b
-
-\b(first|then|next|after|before|meanwhile|until|once)\b
-\b(when\s+you'?re\s+done)\b
-\b(continue\s+(measuring|reading|until))\b
-
-\b(put|place|pour|lower)\s+.*\s+(in|into|onto|there|here)\b
-
-\b(read)\s+(the\s+)?(instructions?|task|next|this|that|aloud)\b
-\b(follow)\s+(the\s+)?instructions?\b
+/\\b(read|measure|pour|put|place|lower|hold|take|bring|fetch|get|give|move|open|close|write|note|explain|describe|investigate|return|carry out)\\b/
+/\\b(let'?s|lets)\\s+\\w+/
+/\\b(we\\s+(need|should|have)\\s+to)\\b/
+/\\b(you\\s+have\\s+to)\\b/
+/\\b(can\\s+you)\\s+\\w+/
+/\\b(do\\s+you\\s+want\\s+to)\\s+\\w+/
+/\\b(someone(\\s+else)?\\s+(can|get|fetch|bring|measure|read))\\b/
+/\\b(first|then|next|after|before|meanwhile|until|once)\\b/
+/\\b(when\\s+you'?re\\s+done)\\b/
+/\\b(continue\\s+(measuring|reading|until))\\b/
+/\\b(put|place|pour|lower)\\s+.*\\s+(in|into|onto|there|here)\\b/
+/\\b(read)\\s+(the\\s+)?(instructions?|task|next|this|that|aloud)\\b/
+/\\b(follow)\\s+(the\\s+)?instructions?\\b/
