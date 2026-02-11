@@ -36,7 +36,7 @@ public abstract class AbstractMAIActor extends BasilicaAdapter
 {
 
 	/*
-	
+	This is a test comment for Eclipse and git
 	
 	*/
 	protected static final double WINDOW_BUFFER = 0.1;
