@@ -36,6 +36,7 @@ import java.util.Properties;
  *
  * @author dadamson
  */
+
 public abstract class BasilicaAdapter implements BasilicaListener, BasilicaPreProcessor
 {
     public interface ListenerListener

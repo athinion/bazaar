@@ -30,6 +30,18 @@ public class CognitiveListener implements BasilicaPreProcessor {
 	
 	protected static final int HISTORY_WINDOW = 300; // define history window
 
+	public CognitiveListener(Agent a) {
+		super(a);
+		promptLabel = "METACOGNITIVE";
+		loadAvailablePrompts();
+	}
+
+	private void loadAvailablePrompts() {
+		// All prompts come from intervention_prompts.xml with ID "METACOGNITIVE"
+		// The PromptTable handles selecting random text variants
+		availablePrompts.add("METACOGNITIVE");
+	}
+ 
 	 // Configure RollingWindow history size + purge interval
 	RollingWindow.sharedWindow().setWindowSize(HISTORY_WINDOW, 2);
 
@@ -44,17 +56,19 @@ public class CognitiveListener implements BasilicaPreProcessor {
 	public void preProcessEvent(InputCoordinator source, Event event)
 	{
 		MessageEvent me = (MessageEvent)event;
-		String normalizedText = me.getText().toLowerCase();
+		//String normalizedText = me.getText().toLowerCase();
 		
-		if(messages.contains(normalizedText)) // detect a repeated message
-		{
-			//this new event will be added to the queue for second-stage processing.
-			RepeatEvent repeat = new RepeatEvent(source, me.getText(), me.getFrom());
-			
-			source.addPreprocessedEvent(repeat);
-		}
+		// if the message doesn't have the annotations that CognitiveListener is looking for, return
+		if !(me.hasAnnotations("DOM+CON" || "CON+DOM"))
+			return;
 		
-		messages.add(normalizedText);
+		
+		
+		// start calculating FCD (Count of messages that are classified as both DOM and CON in the last 5 minutes)
+		
+		
+		// if DOM+CON has been identified more than 3 times in the last 5 minutes, propose a cognitive trigger
+		
 	}
 
 	
