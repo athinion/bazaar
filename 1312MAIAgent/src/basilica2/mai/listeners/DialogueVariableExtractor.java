@@ -46,8 +46,8 @@ public class DialogueVariableExtractor extends BasilicaAdapter implements Basili
     // Thresholds from properties
     private int frequencyThresholdHigh = 5;
     private int frequencyThresholdMedium = 2;
-    private long timeThresholdHigh = 300;
-    private long timeThresholdMedium = 120;
+    private long timeThresholdHigh = 900; // late on the task
+    private long timeThresholdMedium = 600; // in the middle of the task 
     private double giniThresholdHigh = 0.5;
     private double giniThresholdMedium = 0.25;
     
@@ -62,10 +62,10 @@ public class DialogueVariableExtractor extends BasilicaAdapter implements Basili
             getProperties().getProperty("frequency_threshold_medium", "2")
         );
         timeThresholdHigh = Long.parseLong(
-            getProperties().getProperty("time_threshold_high", "300")
+            getProperties().getProperty("time_threshold_high", {timeThresholdHigh}) // is that acceptable syntax?
         );
         timeThresholdMedium = Long.parseLong(
-            getProperties().getProperty("time_threshold_medium", "120")
+            getProperties().getProperty("time_threshold_medium", {timeThresholdMedium})
         );
         giniThresholdHigh = Double.parseDouble(
             getProperties().getProperty("gini_threshold_high", "0.5")

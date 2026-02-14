@@ -36,16 +36,19 @@ import java.lang.Math;
 import java.util.*;
 import java.time.LocalDateTime;
 
+// deconstructs a multimodal message
 
 public class MultiModalFilter extends BasilicaAdapter
 { 
+	// message format that we want: Speaker1 (2024-11-26 08:23:31): What is that? The meter can't fit in the funnel
 
 	public static String GENERIC_NAME = "MultiModalFilter";
 	public static String GENERIC_TYPE = "Filter";
 	private static DateFormat timestamp = new SimpleDateFormat("hh:mm:ss");
+	// get the date
 	public enum multiModalTag  
 	{
-		userID, timestamp, PSI_Bazaar_Text, multimodal, identity, from, to, speech, ;
+		userID, timestamp, multimodal, identity, from, to, speech;
 	}
 	public static String multiModalDelim = ";%;";
 	public static String withinModeDelim = ":::";	
@@ -172,6 +175,9 @@ public class MultiModalFilter extends BasilicaAdapter
 				case multimodal:
 //					System.out.println("=========== multimodal message ===========");	
 //					log(Logger.LOG_NORMAL, "=========== multimodal message ===========");
+					break;
+				case timestamp:
+					
 					break;
 				case identity:  // already handled above 
 //					System.out.println("MultiModalFilter.handleMessageEvent - identity: " + messagePart[1]);	
