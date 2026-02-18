@@ -13,7 +13,7 @@ import basilica2.agents.components.StateMemory;
 import edu.cmu.cs.lti.basilica2.core.Agent;
 import edu.cmu.cs.lti.project911.utils.log.Logger;
 
-import basilica2.agents.data.RollingWindow
+import basilica2.agents.data.RollingWindow;
 
 
 /**
@@ -29,18 +29,22 @@ public class CognitiveListener implements BasilicaPreProcessor {
 	//private ArrayList<String> messages = new ArrayList<String>();
 	
 	protected static final int HISTORY_WINDOW = 300; // define history window
+	protected cognitivePromptTable = cognitivePrompts;
+	
+	// could we load only the cognitive prompts here from the same xml?
+	cognitivePrompts = new PromptTable(properties.getProperty("cognitive_prompts", "intervention_prompts.xml"));
 
 	public CognitiveListener(Agent a) {
 		super(a);
-		promptLabel = "METACOGNITIVE";
-		loadAvailablePrompts();
+//		promptLabel = "METACOGNITIVE";
+//		loadAvailablePrompts();
 	}
 
-	private void loadAvailablePrompts() {
+/*	private void loadAvailablePrompts() {
 		// All prompts come from intervention_prompts.xml with ID "METACOGNITIVE"
 		// The PromptTable handles selecting random text variants
 		availablePrompts.add("METACOGNITIVE");
-	}
+	} */
  
 	 // Configure RollingWindow history size + purge interval
 	RollingWindow.sharedWindow().setWindowSize(HISTORY_WINDOW, 2);
@@ -56,19 +60,26 @@ public class CognitiveListener implements BasilicaPreProcessor {
 	public void preProcessEvent(InputCoordinator source, Event event)
 	{
 		MessageEvent me = (MessageEvent)event;
-		//String normalizedText = me.getText().toLowerCase();
+		
 		
 		// if the message doesn't have the annotations that CognitiveListener is looking for, return
-		if !(me.hasAnnotations("DOM+CON" || "CON+DOM"))
+		// would this work or does it need to be split up in 2 separate conditions?
+		if (!me.hasAnnotations("DOM+CON"))
+			return;
+
+		if (!me.hasAnnotations("CON+DOM"))
 			return;
 		
 		
+		// if DOM+CON has been identified more than 3 times in the last 5 minutes
 		
-		// start calculating FCD (Count of messages that are classified as both DOM and CON in the last 5 minutes)
-		
-		
-		// if DOM+CON has been identified more than 3 times in the last 5 minutes, propose a cognitive trigger
-		
+		//returns a count of events occurring in the last secondsAgo seconds matching ALL keys
+		if (RollingWindow.sharedWindow().countAnyEvents(HISTORY_WINDOW, "DOM", "CON") > 3)
+		{
+			// Then propose a cognitive trigger
+			
+			
+		}
 	}
 
 	

@@ -1,71 +1,74 @@
 package basilica2.mai.listeners;
 
-import basilica2.agents.data.RollingWindow;
+import edu.cmu.cs.lti.basilica2.core.Event;
+import basilica2.agents.components.InputCoordinator;
 import basilica2.agents.events.MessageEvent;
-import edu.cmu.cs.lti.basilica2.core.Agent;
-import edu.cmu.cs.lti.project911.utils.log.Logger;
+import basilica2.agents.events.PromptEvent;
+import basilica2.agents.events.priority.PriorityEvent;
+import basilica2.agents.events.priority.PriorityEvent.Callback;
 
-public class MAIActor extends AbstractMAIActor
+public class PromptActor implements BasilicaListener
 {
-	public MAIActor(Agent a)
-	{
-		super(a); //all the variance is in the properties file
-	}
 
-	//second-tier response - the core AT move isn't needed because the discussion is productive enough - check for secondary opportunity
-	@Override
-	public void performFollowupCheck(final MessageEvent event)
-	{
-		if (RollingWindow.sharedWindow().countAnyEvents(candidateWindow - WINDOW_BUFFER, "DISAGREEMENT", "CHALLENGE_CONTRIBUTION") > 0)
-		{
-
-			MessageEvent responseEvent = getResponseEvent(event.getFrom(), "DISAGREEMENT", "CHALLENGE_CONTRIBUTION");
-
-			if (responseEvent != null) 
-			{
-				String challenger = responseEvent.getFrom();
-				makeFeedbackProposal(challenger, "", responseEvent, accountablePrompts, "REQUEST_DISAGREE_EXPLANATION", 0.2);
-			}
-		}
-
-		else
-		{
-			MessageEvent responseEvent = getResponseEvent(event.getFrom(), "AGREEMENT");
-			if (responseEvent != null) 
-			{
-				String challenger = responseEvent.getFrom();
-				makeFeedbackProposal(challenger, "", responseEvent, accountablePrompts, "REQUEST_EXPLANATION", 0.2);
-			}
-		}
-	}
 
 	/**
-	 * additional check for move candidate
-	 * Goal 4: help students think with others - group RB is low/imbalanced (how low?)
-		    Agree/Disagree - match is low
-		    Add on - match is low
-		    Explain Other - match is high
+	 * @param source the InputCoordinator - action proposals are sent back through the source, which will queue them with the output coordinator.
+	 * @param event an incoming event which matches one of this reactor's advertised classes (see getListenerEventClasses)
+	 * 
+	 * React to an incoming event, possibly proposing a response
 	 */
 	@Override
-	public boolean shouldTriggerOnCandidate(MessageEvent me)
+	public void processEvent(InputCoordinator source, Event event)
 	{
-		int myTurns = RollingWindow.sharedWindow().countEvents(ratioWindowTime, me.getFrom()+"_turn");
-		int allTurns = RollingWindow.sharedWindow().countEvents(ratioWindowTime, "student_turn");
-		int myCandidates = RollingWindow.sharedWindow().countEvents(ratioWindowTime, me.getFrom()+"_turn", candidateLabel);
-		int allCandidates = RollingWindow.sharedWindow().countEvents(ratioWindowTime, "student_turn", candidateLabel);
-		
-		double ratio = (allCandidates - myCandidates) /(double)Math.max(1, allTurns - myTurns);
-		log(Logger.LOG_NORMAL, me.getFrom()+"'s" +candidateLabel+ " ratio is "+ratio);
-		
-		return ratio < targetRatio;
+		if(event instanceof PromptEvent)
+		{
+			PromptEvent re = (PromptEvent)event;
+			
+			MessageEvent me = new MessageEvent(source, source.getAgent().getUsername(), re.text, re.from);
+			
+			/*BlackoutEvent parameters: source-name, event, priority (between 0.0 and 1.0), 
+			 *   relevance window (timeout, in seconds, before this proposal will be rejected), 
+			 *   blackout window (after this proposal is accepted, new proposals will be blocked for this long)
+			 *   There are other ways to configure action proposals ("PriorityEvent" instances) -- see ProrityEvent and PrioritySource.
+			 */
+			PriorityEvent blackout = PriorityEvent.makeBlackoutEvent(re.from, me, 1000000.0, 5, 15);
+			
+			/**
+			 * components can be notified of accepted/rejected proposals by registering a callback.
+			 */
+			blackout.addCallback(new Callback()
+			{
+				@Override
+				public void accepted(PriorityEvent p) 
+				{
+	
+					
+				}
+
+				@Override
+				public void rejected(PriorityEvent p) 
+				{ 
+					// ignore our rejected proposals
+				}
+			});
+			
+			/*
+			 * There are other was to add a proposal besides addProposal -- see addEventProposal, pushProposal, etc in InputCoordinator.
+			 */
+			source.addProposal(blackout);
+		}
+
 	}
 
+
+	/**
+	 * @return the classes of events this reactor will respond to
+	 */
 	@Override
-	public boolean shouldAnnotateAsCandidate(MessageEvent me)
+	public Class[] getListenerEventClasses()
 	{
-		boolean shouldAnnotate = !me.hasAnnotations("QUESTION") && !me.getText().contains("?");
-		//System.out.println("ADA: "+shouldAnnotate + " <-- "+me);
-		return shouldAnnotate;
+		//both RepeatEvents and MessageEvents will be forwarded to this reactor. 
+		return new Class[]{PromptEvent.class};
 	}
-	
+
 }

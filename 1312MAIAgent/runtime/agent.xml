@@ -6,10 +6,10 @@
         
 
          <!-- PENDING: TranscriptReader OR another listener needed here -->
-        <component name="transcriptReader" type="Filter" class="basilica2.mai.listeners.TranscriptReader" properties="properties/TranscriptReader.properties"/>
+        <component name="MultiModalFilter" type="Filter" class="basilica2.mai.listeners.MultiModalFilter" properties="properties/MultiModalFilter.properties"/>
         
         <!-- PENDING: Output component / we don't want WhiteboardActor here -->
-        <component name="outputActor" type="Actor" class="basilica2.agents.components.WhiteboardActor" properties=""/>
+        <component name="outputActor" type="Actor" class="basilica2.mai.listeners.MAIActor" properties=""/>
         
         <component name="inputCoordinator" type="Coordinator" class="basilica2.agents.components.InputCoordinator" properties=""/>
         <component name="outputCoordinator" type="Coordinator" class="basilica2.agents.components.OutputCoordinator" properties=""/>
@@ -22,10 +22,10 @@
         <!-- InputCoordinator processes events (preprocessors run here) -->
         <connection from="inputCoordinator" to="inputCoordinator"/>
         
-        <!-- InputCoordinator → OutputCoordinator: passes processed messages -->
-        <connection from="inputCoordinator" to="outputCoordinator"/>
+        <!-- InputCoordinator → OutputActor: passes processed messages -->
+        <connection from="inputCoordinator" to="outputActor"/>
         
         <!-- OutputCoordinator → OutputActor: sends prompts to display -->
-        <connection from="outputCoordinator" to="outputActor"/>
+        <connection from="outputActor" to="outputCoordinator"/>
     </connections>
 </agent>

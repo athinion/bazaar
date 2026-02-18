@@ -17,6 +17,7 @@ public class ConditionalListenStepHandler implements StepHandler
 {
 
 	private MAIActor mai = null;
+	private CognitiveListener cognitivelistener = null;
 	//private SocialController socializer = null;
 	//private StrategyScoreComputer scoreComputer = null;
 	private RuleBasedTriggerComputer triggerComputer = null;
@@ -31,7 +32,7 @@ public class ConditionalListenStepHandler implements StepHandler
 	{
 		condition = System.getProperty("basilica2.agents.condition", "metacognitive cognitive behavioral socioemotional shared_perspective");
 
-		doMai = condition.contains("metacognitive cognitive behavioral socioemotional shared_perspective");
+		doCognitive = condition.contains("cognitive");
 
 	}
 	
@@ -41,9 +42,9 @@ public class ConditionalListenStepHandler implements StepHandler
 		Logger.commonLog("ConditionalListenStep", Logger.LOG_NORMAL, "starting facilitation step with condition "+condition);
 
 		Agent a = overmind.getAgent();
-		if (doMai)
+		if (doCognitive)
 		{
-			mai = new MAIActor(a);
+			cognitivelistener = new CognitiveListener(a);
 			//scoreComputer = new StrategyScoreComputer(a);
 			//triggerComputer = new RuleBasedTriggerComputer(a);
 		}
