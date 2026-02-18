@@ -33,7 +33,7 @@ public class MetacognitiveListener implements BasilicaPreProcessor {
     private static final String TRIGGER_NAME = "METACOGNITIVE";
     //private static final double PRIORITY = 2.0; // Priority level
 	
-	
+	// test comment for eclipse
 
 	public MetacognitiveListener(Agent a) {
 		RollingWindow.sharedWindow().setWindowSize(HISTORY_WINDOW, 2);
