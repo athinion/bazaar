@@ -1,16 +1,51 @@
 package basilica2.mai.listeners;
 
+import edu.cmu.cs.lti.basilica2.core.Agent;
 import edu.cmu.cs.lti.basilica2.core.Event;
 import basilica2.agents.components.InputCoordinator;
+import basilica2.agents.data.PromptTable;
 import basilica2.agents.events.MessageEvent;
 import basilica2.agents.events.PromptEvent;
 import basilica2.agents.events.priority.PriorityEvent;
 import basilica2.agents.events.priority.PriorityEvent.Callback;
+import basilica2.agents.listeners.BasilicaListener;
 
-public class PromptActor implements BasilicaListener
+public class MAIActor implements BasilicaListener
 {
 
+	// Received MAITriggerEvents from all MAI listeners
+	// Prioritizes them according to priority ranking, forces cooldown (=3mins) and sends intervention prompts to the output coordinator
+	// The priority order is (from highest to lowest): METACOGNITIVE, COGNITIVE, BEHAVIORAL, SOCIOEMOTIONAL, SHARED_PERSPECTIVE
+	
+	protected PromptTable promptTable;
 
+	public MAIActor(Agent a) {
+		// TODO Auto-generated constructor stub
+
+		loadPrompts();
+		initializeCooldowns();
+		//promptLabel = "METACOGNITIVE";
+
+	}
+
+	private void loadPrompts() {
+        try {
+            promptTable = new PromptTable("runtime/plans/intervention_prompts_en.xml");
+            Logger.commonLog(getClass().getSimpleName(), Logger.LOG_NORMAL, 
+                "Loaded intervention prompts");
+        } catch (Exception e) {
+            Logger.commonLog(getClass().getSimpleName(), Logger.LOG_ERROR, 
+                "Failed to load prompts: " + e.getMessage());
+        }
+    }
+
+    private void initializeCooldowns() {
+        String[] triggers = {"METACOGNITIVE", "COGNITIVE", "BEHAVIORAL", "SOCIOEMOTIONAL", "SHARED_PERSPECTIVE"};
+        for (String t : triggers) {
+            lastFireTime.put(t, 0L);
+        }
+    }
+	
 	/**
 	 * @param source the InputCoordinator - action proposals are sent back through the source, which will queue them with the output coordinator.
 	 * @param event an incoming event which matches one of this reactor's advertised classes (see getListenerEventClasses)

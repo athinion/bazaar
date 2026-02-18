@@ -8,7 +8,7 @@ import edu.cmu.cs.lti.basilica2.core.Event;
 import basilica2.agents.components.InputCoordinator;
 import basilica2.agents.events.MessageEvent;
 import basilica2.agents.listeners.BasilicaPreProcessor;
-
+import basilica2.mai.events.MAITriggerEvent;
 import basilica2.agents.components.StateMemory;
 import edu.cmu.cs.lti.basilica2.core.Agent;
 import edu.cmu.cs.lti.project911.utils.log.Logger;
@@ -25,29 +25,21 @@ import basilica2.agents.data.RollingWindow;
 public class CognitiveListener implements BasilicaPreProcessor {
 
 
-	//a toy-sized model of message history - see "RollingWindow" for a richer event log.
-	//private ArrayList<String> messages = new ArrayList<String>();
-	
+	// Configure RollingWindow history size + purge interval
+
 	protected static final int HISTORY_WINDOW = 300; // define history window
-	protected cognitivePromptTable = cognitivePrompts;
 	
-	// could we load only the cognitive prompts here from the same xml?
-	cognitivePrompts = new PromptTable(properties.getProperty("cognitive_prompts", "intervention_prompts.xml"));
+    //private static final int TRIGGER_THRESHOLD = 3;
+    private static final String TRIGGER_NAME = "COGNITIVE";
+    private static final double PRIORITY = 2.0; // Priority level
+	
+	
 
 	public CognitiveListener(Agent a) {
-		super(a);
-//		promptLabel = "METACOGNITIVE";
-//		loadAvailablePrompts();
+		RollingWindow.sharedWindow().setWindowSize(HISTORY_WINDOW, 2);
 	}
 
-/*	private void loadAvailablePrompts() {
-		// All prompts come from intervention_prompts.xml with ID "METACOGNITIVE"
-		// The PromptTable handles selecting random text variants
-		availablePrompts.add("METACOGNITIVE");
-	} */
- 
-	 // Configure RollingWindow history size + purge interval
-	RollingWindow.sharedWindow().setWindowSize(HISTORY_WINDOW, 2);
+
 
 	/**
 	 * @param source the InputCoordinator - to push new events to. (Modified events don't need to be re-pushed).
@@ -59,17 +51,22 @@ public class CognitiveListener implements BasilicaPreProcessor {
 	@Override
 	public void preProcessEvent(InputCoordinator source, Event event)
 	{
+
+		if (!(event instanceof MessageEvent)) {
+            return;
+        }
 		MessageEvent me = (MessageEvent)event;
 		
 		
-		// if the message doesn't have the annotations that CognitiveListener is looking for, return
-		// would this work or does it need to be split up in 2 separate conditions?
+		// this was made according to the logs, but could it also work as "!me.hasAnnotations("DOM", "CON")
 		if (!me.hasAnnotations("DOM+CON"))
 			return;
 
 		if (!me.hasAnnotations("CON+DOM"))
 			return;
 		
+		// Add to rolling window
+		RollingWindow.sharedWindow().addEvent(event, TRIGGER_NAME, "DOM_CON");
 		
 		// if DOM+CON has been identified more than 3 times in the last 5 minutes
 		
@@ -77,6 +74,11 @@ public class CognitiveListener implements BasilicaPreProcessor {
 		if (RollingWindow.sharedWindow().countAnyEvents(HISTORY_WINDOW, "DOM", "CON") > 3)
 		{
 			// Then propose a cognitive trigger
+			 Logger.commonLog(getClass().getSimpleName(), Logger.LOG_NORMAL,
+                "TRIGGER FIRED: COGNITIVE");
+            
+            MessageEvent triggerMsg = new MessageEvent(source, "MAI_LISTENER", TRIGGER_NAME, "COGNITIVE_TRIGGER");
+            source.addPreprocessedEvent(triggerMsg);
 			
 			
 		}
