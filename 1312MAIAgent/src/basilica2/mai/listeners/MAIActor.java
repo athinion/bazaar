@@ -2,13 +2,16 @@ package basilica2.mai.listeners;
 
 import edu.cmu.cs.lti.basilica2.core.Agent;
 import edu.cmu.cs.lti.basilica2.core.Event;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import basilica2.agents.components.InputCoordinator;
 import basilica2.agents.data.PromptTable;
 import basilica2.agents.events.MessageEvent;
 import basilica2.agents.events.PromptEvent;
-import basilica2.agents.events.priority.PriorityEvent;
-import basilica2.agents.events.priority.PriorityEvent.Callback;
 import basilica2.agents.listeners.BasilicaListener;
+
 
 public class MAIActor implements BasilicaListener
 {
@@ -17,82 +20,42 @@ public class MAIActor implements BasilicaListener
 	// Prioritizes them according to priority ranking, forces cooldown (=3mins) and sends intervention prompts to the output coordinator
 	// The priority order is (from highest to lowest): METACOGNITIVE, COGNITIVE, BEHAVIORAL, SOCIOEMOTIONAL, SHARED_PERSPECTIVE
 	
-	protected PromptTable promptTable;
+	private PromptTable promptTable;
+	private Map<String,Long> lastFireTime = new HashMap<>();
+	private static final long COOLDOWN_MS = 180000; // 3 min
+	private static final Map<String,Integer> PRIORITY = new HashMap<String,Integer>() {{
+    	put("METACOGNITIVE",1); put("COGNITIVE",2); put("BEHAVIORAL",3);
+   		put("SOCIOEMOTIONAL",4); put("SHARED_PERSPECTIVE",5);
+	}};
 
 	public MAIActor(Agent a) {
-		// TODO Auto-generated constructor stub
-
-		loadPrompts();
-		initializeCooldowns();
-		//promptLabel = "METACOGNITIVE";
-
+    	promptTable = new PromptTable("runtime/plans/intervention_prompts_en.xml");
+    	for(String k : PRIORITY.keySet()) lastFireTime.put(k, 0L);
 	}
 
-	private void loadPrompts() {
-        try {
-            promptTable = new PromptTable("runtime/plans/intervention_prompts_en.xml");
-            Logger.commonLog(getClass().getSimpleName(), Logger.LOG_NORMAL, 
-                "Loaded intervention prompts");
-        } catch (Exception e) {
-            Logger.commonLog(getClass().getSimpleName(), Logger.LOG_ERROR, 
-                "Failed to load prompts: " + e.getMessage());
-        }
-    }
-
-    private void initializeCooldowns() {
-        String[] triggers = {"METACOGNITIVE", "COGNITIVE", "BEHAVIORAL", "SOCIOEMOTIONAL", "SHARED_PERSPECTIVE"};
-        for (String t : triggers) {
-            lastFireTime.put(t, 0L);
-        }
-    }
 	
-	/**
-	 * @param source the InputCoordinator - action proposals are sent back through the source, which will queue them with the output coordinator.
-	 * @param event an incoming event which matches one of this reactor's advertised classes (see getListenerEventClasses)
-	 * 
-	 * React to an incoming event, possibly proposing a response
-	 */
 	@Override
 	public void processEvent(InputCoordinator source, Event event)
 	{
-		if(event instanceof PromptEvent)
-		{
-			PromptEvent re = (PromptEvent)event;
-			
-			MessageEvent me = new MessageEvent(source, source.getAgent().getUsername(), re.text, re.from);
-			
-			/*BlackoutEvent parameters: source-name, event, priority (between 0.0 and 1.0), 
-			 *   relevance window (timeout, in seconds, before this proposal will be rejected), 
-			 *   blackout window (after this proposal is accepted, new proposals will be blocked for this long)
-			 *   There are other ways to configure action proposals ("PriorityEvent" instances) -- see ProrityEvent and PrioritySource.
-			 */
-			PriorityEvent blackout = PriorityEvent.makeBlackoutEvent(re.from, me, 1000000.0, 5, 15);
-			
-			/**
-			 * components can be notified of accepted/rejected proposals by registering a callback.
-			 */
-			blackout.addCallback(new Callback()
-			{
-				@Override
-				public void accepted(PriorityEvent p) 
-				{
-	
-					
-				}
+		if(!(event instanceof MessageEvent)) return;
+    	MessageEvent me = (MessageEvent) event;
 
-				@Override
-				public void rejected(PriorityEvent p) 
-				{ 
-					// ignore our rejected proposals
-				}
-			});
-			
-			/*
-			 * There are other was to add a proposal besides addProposal -- see addEventProposal, pushProposal, etc in InputCoordinator.
-			 */
-			source.addProposal(blackout);
-		}
+   	 // identify trigger (either via annotation or message text)
+    	if(!me.hasAnyAnnotations("COGNITIVE_TRIGGER","METACOGNITIVE_TRIGGER", "BEHAVIORAL_TRIGGER", "SOCIOEMOTIONAL_TRIGGER", "SHARED_PERSPECTIVE_TRIGGER"))
+        	return;
 
+   		String triggerName = me.getText(); // or derive from annotation
+    	long last = lastFireTime.getOrDefault(triggerName, 0L);
+    	if(System.currentTimeMillis() - last < COOLDOWN_MS) return;
+
+    	String promptText = promptTable.lookup(triggerName);
+    	if(promptText == null || promptText.isEmpty()) return;
+
+    // create PromptEvent and enqueue so PromptActor handles delivery
+    	PromptEvent pe = new PromptEvent(source, promptText, me.getFrom());
+    	source.addPreprocessedEvent(pe);
+
+    	lastFireTime.put(triggerName, System.currentTimeMillis());
 	}
 
 
@@ -103,7 +66,7 @@ public class MAIActor implements BasilicaListener
 	public Class[] getListenerEventClasses()
 	{
 		//both RepeatEvents and MessageEvents will be forwarded to this reactor. 
-		return new Class[]{PromptEvent.class};
+		return new Class[]{MessageEvent.class};
 	}
 
 }

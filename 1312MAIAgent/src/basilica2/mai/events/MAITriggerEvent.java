@@ -5,7 +5,7 @@ import edu.cmu.cs.lti.basilica2.core.Event;
 
 /**
  * MAITriggerEvent
- * 
+ * ----OLD, NOT USED IN CURRENT VERSION OF MAI------
  * Fired by RuleBasedTriggerComputer when a trigger condition is met.
  * PlanExecutor listens for these events and executes corresponding plan steps.
  */
