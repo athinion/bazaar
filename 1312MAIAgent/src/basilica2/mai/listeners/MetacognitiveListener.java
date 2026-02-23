@@ -1,6 +1,7 @@
 package basilica2.mai.listeners;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -16,12 +17,7 @@ import edu.cmu.cs.lti.project911.utils.log.Logger;
 import basilica2.agents.data.RollingWindow;
 
 
-/**
- * Cognitive Actor for MAI F2F
- * 
- * Triggers when: (DOM is High) AND (CON is High) AND (FCD is Medium OR FCD is High)
- * Blackout: 180 seconds
- */
+
 public class MetacognitiveListener implements BasilicaPreProcessor {
 
 
@@ -59,16 +55,15 @@ public class MetacognitiveListener implements BasilicaPreProcessor {
 		
 		
 		// this was made according to the logs, but could it also work as "!me.hasAnnotations("DOM", "CON")
-		if (!me.hasAnnotations("DOM+COO"))
+		if (!me.hasAnnotations("DOM") || (!me.hasAnnotations("COO")))
 			return;
 
-		if (!me.hasAnnotations("COO+DOM"))
-			return;
+
 		
 		// Add to rolling window
 		RollingWindow.sharedWindow().addEvent(event, TRIGGER_NAME, "DOM_COO");
 		
-		// if DOM+CON has been identified more than 3 times in the last 5 minutes
+		// if DOM+COO has been identified more than 3 times in the last 5 minutes
 		
 		//returns a count of events occurring in the last secondsAgo seconds matching ALL keys
 		if (RollingWindow.sharedWindow().countAnyEvents(HISTORY_WINDOW, "DOM", "COO") > 3)
@@ -78,6 +73,9 @@ public class MetacognitiveListener implements BasilicaPreProcessor {
                 "TRIGGER FIRED: COGNITIVE");
             
             MessageEvent triggerMsg = new MessageEvent(source, "MAI_LISTENER", TRIGGER_NAME, "METACOGNITIVE_TRIGGER");
+            
+            // add an annotation to the message for "metacognitive"
+            triggerMsg.addAnnotation("METACOGNITIVE_TRIGGER", Arrays.asList("METACOGNITIVE"));
             source.addPreprocessedEvent(triggerMsg);
 			
 			

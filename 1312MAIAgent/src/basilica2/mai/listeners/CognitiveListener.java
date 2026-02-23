@@ -1,6 +1,7 @@
 package basilica2.mai.listeners;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -59,10 +60,7 @@ public class CognitiveListener implements BasilicaPreProcessor {
 		
 		
 		// this was made according to the logs, but could it also work as "!me.hasAnnotations("DOM", "CON")
-		if (!me.hasAnnotations("DOM+CON"))
-			return;
-
-		if (!me.hasAnnotations("CON+DOM"))
+		if (!me.hasAnnotations("DOM") || (!me.hasAnnotations("CONN")))
 			return;
 		
 		// Add to rolling window
@@ -78,7 +76,10 @@ public class CognitiveListener implements BasilicaPreProcessor {
                 "TRIGGER FIRED: COGNITIVE");
             
             MessageEvent triggerMsg = new MessageEvent(source, "MAI_LISTENER", TRIGGER_NAME, "COGNITIVE_TRIGGER");
-            source.addPreprocessedEvent(triggerMsg);
+            
+			triggerMsg.addAnnotation("COGNITIVE_TRIGGER", Arrays.asList("COGNITIVE"));
+			
+			source.addPreprocessedEvent(triggerMsg);
 			
 			
 		}
