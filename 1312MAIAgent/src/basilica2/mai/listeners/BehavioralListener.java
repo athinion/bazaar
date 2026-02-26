@@ -8,7 +8,11 @@ import java.util.Random;
 import edu.cmu.cs.lti.basilica2.core.Event;
 import basilica2.agents.components.InputCoordinator;
 import basilica2.agents.events.MessageEvent;
+import basilica2.agents.events.PresenceEvent;
 import basilica2.agents.listeners.BasilicaPreProcessor;
+//import basilica2.social.listeners.ActivityTracker;
+import basilica2.agents.listeners.BasilicaAdapter;
+import edu.cmu.cs.lti.project911.utils.time.TimeoutReceiver;
 import basilica2.mai.events.MAITriggerEvent;
 import basilica2.agents.components.StateMemory;
 import edu.cmu.cs.lti.basilica2.core.Agent;
@@ -24,26 +28,18 @@ public class BehavioralListener implements BasilicaPreProcessor {
 	// Configure RollingWindow history size + purge interval
 
 	protected static final int HISTORY_WINDOW = 300; // define history window
-	
-    //private static final int TRIGGER_THRESHOLD = 3;
-    private static final String TRIGGER_NAME = "COGNITIVE";
-    private static final double PRIORITY = 2.0; // Priority level
-	
-	
+    private static final String TRIGGER_NAME = "BEHAVIORAL";
 
-	public CognitiveListener(Agent a) {
+	public BehavioralListener(Agent a) {
 		RollingWindow.sharedWindow().setWindowSize(HISTORY_WINDOW, 2);
 	}
+	//Agent a = overmind.getAgent();
+	//ActivityTracker at = new ActivityTracker();
 
 
+	// we need the behavioral listener to take info from the presence watcher and calculate messages per student
 
-	/**
-	 * @param source the InputCoordinator - to push new events to. (Modified events don't need to be re-pushed).
-	 * @param event an incoming event which matches one of this preprocessor's advertised classes (see getPreprocessorEventClasses)
-	 * 
-	 * Preprocess an incoming event, by modifying this event or creating a new event in response. 
-	 * All original and new events will be passed by the InputCoordinator to the second-stage Reactors ("BasilicaListener" instances).
-	 */
+
 	@Override
 	public void preProcessEvent(InputCoordinator source, Event event)
 	{
@@ -53,31 +49,6 @@ public class BehavioralListener implements BasilicaPreProcessor {
         }
 		MessageEvent me = (MessageEvent)event;
 		
-		
-		// this was made according to the logs, but could it also work as "!me.hasAnnotations("DOM", "CON")
-		if (!me.hasAnnotations("DOM") || (!me.hasAnnotations("CONN")))
-			return;
-		
-		// Add to rolling window
-		RollingWindow.sharedWindow().addEvent(event, TRIGGER_NAME, "DOM_CON");
-		
-		// if DOM+CON has been identified more than 3 times in the last 5 minutes
-		
-		//returns a count of events occurring in the last secondsAgo seconds matching ALL keys
-		if (RollingWindow.sharedWindow().countAnyEvents(HISTORY_WINDOW, "DOM", "CON") > 3)
-		{
-			// Then propose a cognitive trigger
-			 Logger.commonLog(getClass().getSimpleName(), Logger.LOG_NORMAL,
-                "TRIGGER FIRED: COGNITIVE");
-            
-            MessageEvent triggerMsg = new MessageEvent(source, "MAI_LISTENER", TRIGGER_NAME, "COGNITIVE_TRIGGER");
-            
-			triggerMsg.addAnnotation("COGNITIVE_TRIGGER", Arrays.asList("COGNITIVE"));
-			
-			source.addPreprocessedEvent(triggerMsg);
-			
-			
-		}
 	}
 
 	
@@ -87,8 +58,8 @@ public class BehavioralListener implements BasilicaPreProcessor {
 	@Override
 	public Class[] getPreprocessorEventClasses()
 	{
-		//only MessageEvents will be delivered to this watcher.
-		return new Class[]{MessageEvent.class};
+		//MessageEvents and PresenceEvents will be delivered to this watcher.
+		return new Class[]{MessageEvent.class, PresenceEvent.class};
 	}
 
 }

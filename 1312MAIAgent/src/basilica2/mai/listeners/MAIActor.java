@@ -25,7 +25,7 @@ public class MAIActor implements BasilicaListener
 	private static final long COOLDOWN_MS = 180000; // 3 min
 	private static final Map<String,Integer> PRIORITY = new HashMap<String,Integer>() {{
     	put("METACOGNITIVE",1); put("COGNITIVE",2); put("BEHAVIORAL",3);
-   		put("SOCIOEMOTIONAL",4); put("SHARED_PERSPECTIVE",5);
+   		put("AFFECTIVE",4); put("SOCIAL",5);
 	}};
 
 	public MAIActor(Agent a) {
@@ -41,7 +41,7 @@ public class MAIActor implements BasilicaListener
     	MessageEvent me = (MessageEvent) event;
 
    	 // identify trigger (either via annotation or message text)
-    	if(!me.hasAnyAnnotations("COGNITIVE_TRIGGER","METACOGNITIVE_TRIGGER", "BEHAVIORAL_TRIGGER", "SOCIOEMOTIONAL_TRIGGER", "SHARED_PERSPECTIVE_TRIGGER"))
+    	if(!me.hasAnyAnnotations("COGNITIVE_TRIGGER","METACOGNITIVE_TRIGGER", "BEHAVIORAL_TRIGGER", "AFFECTIVE_TRIGGER", "SOCIAL_TRIGGER"))
         	return;
 
    		String triggerName = me.getText(); // or derive from annotation
