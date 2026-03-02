@@ -1,88 +1,250 @@
 change management
 change process
+process model of change
 planned change
 emergent change
-implementation plan
-change objective
+teleological change
+dialectical change
+organizational change
 change initiative
-change intervention
+change programme
+change objective
+desired end state
+current state
+gap analysis
+diagnosis
+organizational diagnosis
+problem framing
+sensemaking
+interpretation
+data collection
+qualitative analysis
+quantitative analysis
+evidence-based decision making
 stakeholder
 stakeholder analysis
+stakeholder mapping
+stakeholder engagement
+key stakeholders
+internal stakeholders
+external stakeholders
+stakeholder expectations
+stakeholder interests
+power dynamics
+political behaviour
+organizational politics
 change agent
-leadership
-top management
-project team
-end users
-resistance to change
-change resistance
-cultural resistance
-organizational culture
-subculture
-trust
-credibility
-perception of change
-employee engagement
-communication strategy
-internal communication
-sensemaking
-shared understanding
-transparency
-implementation
-phased implementation
-pilot project
-rollout
-timeline
-roadmap
-change phases
+change leadership
+leadership alignment
+top management support
+senior leadership
+middle management
+change sponsor
+governance structure
+decision-making process
+organizational structure
+organizational silos
+functional silos
+cross-functional integration
+coordination mechanisms
 organizational alignment
 strategic alignment
+shared vision
 shared goals
-coordination
-integration
+alignment of interests
+misalignment
+organizational culture
+subculture
+cultural differences
+cultural integration
+cultural resistance
+resistance to change
+change resistance
+employee resistance
+sources of resistance
+barriers to change
+blockers
+supporters
+change readiness
+readiness for change
+perception of change
+attitudes to change
+buy-in
+commitment
+engagement
+participation
+involvement
+communication
+communication strategy
+internal communication
+change communication
+message framing
+transparency
+information sharing
+knowledge sharing
+sensegiving
+feedback loops
+feedback mechanisms
+learning
+organizational learning
+learning process
+reflection
+adaptation
+continuous improvement
+intervention
+change intervention
+behavioral intervention
+structural intervention
+technological intervention
+implementation
+implementation process
+implementation plan
+implementation strategy
+phased implementation
+pilot implementation
+pilot project
+rollout
+scaling
+change timeline
+milestones
+roadmap
+project management
+programme management
+change governance
+risk management
+risk assessment
+uncertainty
+complexity
+system complexity
+implementation risk
+failure risk
+change failure
+implementation failure
+user adoption
+adoption rate
+technology adoption
+resistance to technology
+digital transformation
 CRM system
 centralized CRM
-data integration
+CRM implementation
 AI-driven analytics
+data integration
+data consolidation
+data sharing
+data quality
+data governance
+data ownership
 customer data
 stakeholder data
-training
-capability building
-skill development
-user adoption
-implementation failure
-system complexity
-data privacy
-resource constraints
-uncertainty
-efficiency
+information systems
+IT infrastructure
+system integration
+process integration
+standardization
+process redesign
+business process change
+operational efficiency
 effectiveness
 performance improvement
 value creation
-competitive advantage
-supporters
-blockers
-diagnosis
-intervention
-learning
-feedback
-adaptation
-
-“resistance to change”
-
-“lack of communication”
-
-“need for alignment”
-
-“engage stakeholders”
-
-“implement the system”
-
-“adopt new technology”
-
-“improve performance”
-
-“support the change”
-
-“drive change”
-
-“manage resistance”
+benefits realization
+cost-benefit analysis
+resource allocation
+capability building
+training
+training programmes
+skill development
+competence development
+user training
+support mechanisms
+coaching
+facilitation
+change capability
+organizational capability
+capacity building
+work practices
+ways of working
+behavior change
+mindset change
+norms
+routines
+institutionalization
+sustainability of change
+embedding change
+reinforcement
+monitoring
+evaluation
+review
+performance measurement
+KPI
+KPIs
+success metrics
+quick wins
+short-term wins
+momentum
+change fatigue
+workload pressure
+time constraints
+prioritization
+trade-offs
+external environment
+competitive pressure
+financial pressure
+resource constraints
+innovation
+AI strategy
+digital strategy
+strategic change
+long-term transformation
+short-term adjustment
+integration of systems
+integration of stakeholders
+collaboration
+interdepartmental collaboration
+coordination failure
+information asymmetry
+knowledge gaps
+trust building
+credibility
+legitimacy
+authority
+influence
+negotiation
+conflict
+tension
+compromise
+alignment process
+decision alignment
+goal conflict
+interest conflict
+organizational identity
+professional identity
+academic autonomy
+loss of autonomy
+control
+centralization
+decentralization
+standardization vs flexibility
+local practices
+global systems
+change narrative
+vision communication
+value proposition
+benefits of change
+perceived benefits
+perceived risks
+costs of change
+impact assessment
+change impact
+user experience
+system usability
+acceptance
+rejection
+trial and error
+iteration
+adjustment process
+feedback-driven change
+adaptive implementation
+emergent outcomes
+project team
