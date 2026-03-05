@@ -3,8 +3,6 @@
     <components>
         <!-- State memory for shared state across components -->
         <component name="stateMemory" type="Memory" class="basilica2.agents.components.StateMemory" properties=""/>
-        
-        <component name="MultiModalFilter" type="Filter" class="basilica2.mai.listeners.MultiModalFilter" properties="properties/MultiModalFilter.properties"/>
     
         <component name="outputActor" type="Actor" class="basilica2.mai.listeners.MAIActor" properties=""/>
         

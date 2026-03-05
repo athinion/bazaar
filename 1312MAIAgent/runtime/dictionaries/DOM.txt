@@ -225,7 +225,8 @@ loss of autonomy
 control
 centralization
 decentralization
-standardization vs flexibility
+standardization 
+flexibility
 local practices
 global systems
 change narrative
@@ -248,3 +249,26 @@ feedback-driven change
 adaptive implementation
 emergent outcomes
 project team
+schedule management 
+cost management 
+organizational change project  
+incremental change 
+revolutionary change 
+transformational change 
+adaptation 
+re-creation 
+proactive change 
+reactive change 
+three stage change model 
+Kotter’s 8 step change model 
+sustainable change 
+sustaining change 
+component model 
+holistic model 
+The McKinsey’s 7S model 
+Kotter’s framework 
+The Burke-Litwin causal model 
+agile change project management 
+stickability 
+spreadability 
+Bateman and Davi’s model of sustainability 

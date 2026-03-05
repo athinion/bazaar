@@ -17,12 +17,6 @@ import edu.cmu.cs.lti.project911.utils.log.Logger;
 import basilica2.agents.data.RollingWindow;
 
 
-/**
- * Cognitive Actor for MAI F2F
- * 
- * Triggers when: (DOM is High) AND (CON is High) AND (FCD is Medium OR FCD is High)
- * Blackout: 180 seconds
- */
 public class CognitiveListener implements BasilicaPreProcessor {
 
 

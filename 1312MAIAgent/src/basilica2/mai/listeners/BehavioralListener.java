@@ -10,7 +10,7 @@ import basilica2.agents.components.InputCoordinator;
 import basilica2.agents.events.MessageEvent;
 import basilica2.agents.events.PresenceEvent;
 import basilica2.agents.listeners.BasilicaPreProcessor;
-//import basilica2.social.listeners.ActivityTracker;
+import basilica2.mai.listeners.MAIActivityTracker;
 import basilica2.agents.listeners.BasilicaAdapter;
 import edu.cmu.cs.lti.project911.utils.time.TimeoutReceiver;
 import basilica2.mai.events.MAITriggerEvent;
@@ -20,7 +20,12 @@ import edu.cmu.cs.lti.project911.utils.log.Logger;
 
 import basilica2.agents.data.RollingWindow;
 
-
+//Dormant students and dormant groups are tracked by ActivityTracker.java,
+// which is one of a suite of listeners under SocialAgent. 
+// It creates DormantStudentEvent and DormantGroupEvent, 
+// to which actors or other listeners can respond. SocialAgent also has a lot of other interesting code under src/
+// , including some that react to dormancy events, some that compute and deal with strategy, 
+// and some interesting feature detectors under basilica2.social.utilities. 
 
 public class BehavioralListener implements BasilicaPreProcessor {
 
@@ -29,25 +34,41 @@ public class BehavioralListener implements BasilicaPreProcessor {
 
 	protected static final int HISTORY_WINDOW = 300; // define history window
     private static final String TRIGGER_NAME = "BEHAVIORAL";
+	private MAIActivityTracker at;
 
 	public BehavioralListener(Agent a) {
 		RollingWindow.sharedWindow().setWindowSize(HISTORY_WINDOW, 2);
+		at = new MAIActivityTracker(a);
 	}
-	//Agent a = overmind.getAgent();
-	//ActivityTracker at = new ActivityTracker();
-
-
+	
 	// we need the behavioral listener to take info from the presence watcher and calculate messages per student
 
 
 	@Override
 	public void preProcessEvent(InputCoordinator source, Event event)
 	{
-
+		// is this needed? idk
 		if (!(event instanceof MessageEvent)) {
             return;
         }
 		MessageEvent me = (MessageEvent)event;
+
+		// forward event to activity tracker so it updates its internal counts
+        at.preProcessEvent(source, event);
+        
+        // now ask it whether any student just went dormant
+        if (at.anyoneDormant()) {
+			Logger.commonLog(getClass().getSimpleName(), Logger.LOG_NORMAL,
+                    "behavioural trigger – somebody has gone idle");
+
+			// trigger a MAITriggerEvent with the name "BEHAVIORAL" and the type "DORMANCY"
+			MessageEvent triggerMsg = new MessageEvent(source, "MAI_LISTENER", TRIGGER_NAME, "BEHAVIORAL_TRIGGER");
+            
+			triggerMsg.addAnnotation("AFFECTIVE_TRIGGER", Arrays.asList("BEHAVIORAL"));
+			source.addPreprocessedEvent(triggerMsg);
+		}
+
+        //// or get list of dormant students and trigger.
 		
 	}
 
