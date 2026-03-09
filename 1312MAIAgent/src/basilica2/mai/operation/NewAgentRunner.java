@@ -1,19 +1,16 @@
 package basilica2.mai.operation;
 
 import java.awt.Point;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import basilica2.agents.operation.BaseAgentOperation;
 import basilica2.agents.operation.BaseAgentUI;
 import basilica2.agents.operation.ConditionAgentUI;
+import edu.cmu.cs.lti.basilica2.core.Agent;
+import edu.cmu.cs.lti.project911.utils.log.Logger;
+import joptsimple.OptionParser;
+import joptsimple.OptionSet;
 
-public class MAIAgentOperation extends BaseAgentOperation
+public class NewAgentRunner extends BaseAgentOperation
 {
 	
 	public static void main(final String[] args) {
