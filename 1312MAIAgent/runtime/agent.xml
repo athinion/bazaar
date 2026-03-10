@@ -3,7 +3,7 @@
     <components>
         <!-- State memory for shared state across components -->
         <component name="stateMemory" type="Memory" class="basilica2.agents.components.StateMemory" properties=""/>
-    
+        <component name="ccListener" type="Filter" class="basilica2.mai.listeners.MultiModalFilter" properties="MultiModalFilter.properties"/>
         <component name="outputActor" type="Actor" class="basilica2.mai.listeners.MAIActor" properties=""/>
         
         <component name="inputCoordinator" type="Coordinator" class="basilica2.agents.components.InputCoordinator" properties=""/>
@@ -11,8 +11,8 @@
     </components>
     
     <connections>
-        <!-- TranscriptReader → InputCoordinator: injects transcript messages -->
-        <connection from="transcriptReader" to="inputCoordinator"/>
+        <!-- from MultiModalFilter to input coordinator -->
+        <connection from="ccListener" to="inputCoordinator"/>
         
         <!-- InputCoordinator processes events (preprocessors run here) -->
         <connection from="inputCoordinator" to="inputCoordinator"/>

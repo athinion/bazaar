@@ -28,7 +28,7 @@ public class ConditionalListenStepHandler implements StepHandler
 		{
 			cognitivelistener = new CognitiveListener(a);
 		}
-
+/*
 		if(metacognitivelistener == null)
 		{
 			metacognitivelistener = new MetacognitiveListener(a);
@@ -48,6 +48,7 @@ public class ConditionalListenStepHandler implements StepHandler
 		{
 			affectivelistener = new AffectiveListener(a);
 		}
+		*/
 		
 		//revoicer.setDelegate(new EndStepOnStopListening(overmind, currentStep.name));
         

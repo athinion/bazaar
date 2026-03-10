@@ -28,7 +28,7 @@ public class AffectiveListener implements BasilicaPreProcessor {
     private static final String TRIGGER_NAME = "AFFECTIVE";
     private static final double PRIORITY = 2.0; // Priority level
 	
-	
+	// affective listener test comment
 
 	public AffectiveListener(Agent a) {
 		RollingWindow.sharedWindow().setWindowSize(HISTORY_WINDOW, 2);
