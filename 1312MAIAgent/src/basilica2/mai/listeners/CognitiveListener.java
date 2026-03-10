@@ -7,12 +7,15 @@ import java.util.Random;
 
 import edu.cmu.cs.lti.basilica2.core.Event;
 import basilica2.agents.components.InputCoordinator;
+import basilica2.agents.components.OutputCoordinator;
+import basilica2.agents.events.MAITriggerEvent;
 import basilica2.agents.events.MessageEvent;
+import basilica2.agents.events.priority.PriorityEvent;
 import basilica2.agents.listeners.BasilicaPreProcessor;
-import basilica2.mai.events.MAITriggerEvent;
-import basilica2.agents.components.StateMemory;
+
 import edu.cmu.cs.lti.basilica2.core.Agent;
 import edu.cmu.cs.lti.project911.utils.log.Logger;
+
 
 import basilica2.agents.data.RollingWindow;
 
@@ -58,12 +61,17 @@ public class CognitiveListener implements BasilicaPreProcessor {
 			return;
 		
 		// Add to rolling window
-		RollingWindow.sharedWindow().addEvent(event, TRIGGER_NAME, "DOM_CON");
+		RollingWindow.sharedWindow().addEvent(event, TRIGGER_NAME, "DOM_CONN");
 		
+		MAITriggerEvent MAITriggerEvent = new MAITriggerEvent(source, TRIGGER_NAME);
+      	System.err.println("CognitiveListener, execute - MAITriggerEvent created");
+      	Logger.commonLog(getClass().getSimpleName(),Logger.LOG_NORMAL,"CognitiveListener, execute - MAITriggerEvent created");
+		source.pushProposal(PriorityEvent.makeBlackoutEvent("macro", "MAITriggerEvent", MAITriggerEvent, OutputCoordinator.HIGH_PRIORITY, 5.0, 2));
+
 		// if DOM+CON has been identified more than 3 times in the last 5 minutes
 		
 		//returns a count of events occurring in the last secondsAgo seconds matching ALL keys
-		if (RollingWindow.sharedWindow().countAnyEvents(HISTORY_WINDOW, "DOM", "CON") > 3)
+		if (RollingWindow.sharedWindow().countAnyEvents(HISTORY_WINDOW, "DOM", "CONN") > 3)
 		{
 			// Then propose a cognitive trigger
 			 Logger.commonLog(getClass().getSimpleName(), Logger.LOG_NORMAL,

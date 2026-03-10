@@ -37,6 +37,7 @@ import basilica2.agents.events.LogStateEvent;
 import basilica2.agents.events.EndEvent;
 import basilica2.agents.events.SendCommandEvent;
 import basilica2.agents.events.StartExternalTimerEvent;
+import basilica2.agents.events.MAITriggerEvent;
 import basilica2.agents.events.PoseEvent.poseEventType;
 import basilica2.agents.events.priority.PriorityEvent;
 import basilica2.agents.events.priority.PriorityEvent.Callback;
@@ -237,6 +238,23 @@ public class WebsocketChatClient extends Component implements ChatClient
 				e1.printStackTrace();
 			}
 		}
+		else if(e instanceof MAITriggerEvent)
+		{
+			MAITriggerEvent mte = (MAITriggerEvent) e;
+	        System.err.println("WebsocketChatClient, processEvent, MAITriggerEvent - triggerName: " + mte.getTriggerName());
+	        Logger.commonLog(getClass().getSimpleName(),Logger.LOG_NORMAL,"WebsocketChatClient, processEvent, MAITriggerEvent - triggerName: " + mte.getTriggerName());
+			try
+			{
+				//insertSendCommandEvent(sce.getCommand());
+			}
+			catch (Exception e1)
+			{
+				System.err.println("WebsocketChatClient, processEvent - couldn't send MAITriggerEvent: " + mte);
+		        Logger.commonLog(getClass().getSimpleName(),Logger.LOG_NORMAL,"WebsocketChatClient, processEvent - couldn't send MAITriggerEvent: " + mte);
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
 		else if(e instanceof StartExternalTimerEvent)
 		{
 			StartExternalTimerEvent sete = (StartExternalTimerEvent) e;
@@ -348,6 +366,14 @@ public class WebsocketChatClient extends Component implements ChatClient
         System.err.println("WebsocketChatClient, insertSendCommandEvent - command: " + command);
         Logger.commonLog(getClass().getSimpleName(),Logger.LOG_NORMAL,"WebsocketChatClient, insertSendCommandEvent - command: " + command);
         socket.emit("sendcommandeventwithroom", agentRoomName, command);
+//		socket.emit("sendcommandevent", command);
+	}
+
+	protected void insertMAITriggerEvent(String command)
+	{
+        System.err.println("WebsocketChatClient, insertMAITriggerEvent - command: " + command);
+        Logger.commonLog(getClass().getSimpleName(),Logger.LOG_NORMAL,"WebsocketChatClient, insertMAITriggerEvent - command: " + command);
+        socket.emit("sendtrigger", agentRoomName, command);
 //		socket.emit("sendcommandevent", command);
 	}
 

@@ -7,9 +7,9 @@ import java.util.Random;
 
 import edu.cmu.cs.lti.basilica2.core.Event;
 import basilica2.agents.components.InputCoordinator;
+import basilica2.agents.events.MAITriggerEvent;
 import basilica2.agents.events.MessageEvent;
 import basilica2.agents.listeners.BasilicaPreProcessor;
-import basilica2.mai.events.MAITriggerEvent;
 import basilica2.agents.components.StateMemory;
 import edu.cmu.cs.lti.basilica2.core.Agent;
 import edu.cmu.cs.lti.project911.utils.log.Logger;
