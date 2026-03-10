@@ -32,6 +32,7 @@ public class MAIAgentOperation extends BaseAgentOperation
                 thisOperation.startOperation();
                 thisUI.operationStarted();
                 
+                
                 thisOperation.processArgs(args);
             }
         });
