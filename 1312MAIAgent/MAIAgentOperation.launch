@@ -14,7 +14,7 @@
     <booleanAttribute key="org.eclipse.jdt.launching.ATTR_SHOW_CODEDETAILS_IN_EXCEPTION_MESSAGES" value="true"/>
     <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_CLASSPATH_ONLY_JAR" value="false"/>
     <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
-    <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk-8.0.482.8-hotspot/"/>
+    <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/zulu-8/"/>
     <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="basilica2.mai.operation.MAIAgentOperation"/>
     <stringAttribute key="org.eclipse.jdt.launching.MODULE_NAME" value="1312MAIAgent"/>
     <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="1312MAIAgent"/>

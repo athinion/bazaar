@@ -16,9 +16,13 @@
         
         <!-- InputCoordinator processes events (preprocessors run here) -->
         <connection from="inputCoordinator" to="inputCoordinator"/>
+      
+      	<connection from="inputCoordinator" to="outputCoordinator"/>
         
-        <!-- InputCoordinator → OutputActor: passes processed messages -->
-        <!--<connection from="inputCoordinator" to="outputActor"/>-->
+        <connection from="outputCoordinator" to="ccListener"/>
+      	
+      	
+
         
         <!-- OutputCoordinator → OutputActor: sends prompts to display -->
         <!--<connection from="outputActor" to="outputCoordinator"/>-->

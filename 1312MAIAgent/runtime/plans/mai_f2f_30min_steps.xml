@@ -13,7 +13,7 @@
 
 <!-- in the timeout that is in the stage level,it means that after <timeout> value, this stage will execute no matter what -->
 
-<!-- experiment with delay + timeout values -->
+<!-- DELAY SHOULD BE PUT IN ALL STEPS HERE, NOT TIMEOUT -->
     <stage name="session">
         <step type="silence" timeout="300">SILENCE</step>
         <step type="listen" timeout="1200">LISTEN</step>

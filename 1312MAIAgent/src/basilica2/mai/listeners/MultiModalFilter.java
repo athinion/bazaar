@@ -182,7 +182,7 @@ public class MultiModalFilter extends BasilicaAdapter
 //					log(Logger.LOG_NORMAL, "=========== multimodal message ===========");
 					break;
 				case timestamp:
-					
+//					check from the logs if timestamp is added automatically
 					break;
 				case identity:  // already handled above 
 //					System.out.println("MultiModalFilter.handleMessageEvent - identity: " + messagePart[1]);	

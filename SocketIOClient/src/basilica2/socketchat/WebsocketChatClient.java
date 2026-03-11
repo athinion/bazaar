@@ -51,7 +51,7 @@ import edu.cmu.cs.lti.basilica2.core.Event;
 public class WebsocketChatClient extends Component implements ChatClient
 {	
 
-	String socketURL = "http://86.50.170.225:8000";
+	String socketURL = "http://localhost:8500";
 	String socketSubURL = null;
 	String agentUserName = "ROBOT";
 	String agentRoomName = "ROOM";
@@ -285,7 +285,7 @@ public class WebsocketChatClient extends Component implements ChatClient
 		agentRoomName = roomName;
 //		System.out.println("logging in to "+roomName+" at "+socketURL);
 		if (socketSubURL != null) {
-//			System.out.println("    Using specialized socket.io address " + socketSubURL);			
+			System.out.println("    Using specialized socket.io address " + socketSubURL);			
 		}
 		try
 		{
@@ -374,7 +374,6 @@ public class WebsocketChatClient extends Component implements ChatClient
         System.err.println("WebsocketChatClient, insertMAITriggerEvent - command: " + command);
         Logger.commonLog(getClass().getSimpleName(),Logger.LOG_NORMAL,"WebsocketChatClient, insertMAITriggerEvent - command: " + command);
         socket.emit("sendtrigger", agentRoomName, command);
-//		socket.emit("sendcommandevent", command);
 	}
 
 	protected void insertStartExternalTimerEvent(String time)

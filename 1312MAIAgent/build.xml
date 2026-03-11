@@ -3,7 +3,8 @@
               Any modifications will be overwritten.
               To include a user specific buildfile here, simply create one in the same
               directory with the processing instruction <?eclipse.ant.import?>
-              as the first entry and export the buildfile again. --><project basedir="." default="build" name="1312MAIAgent">
+              as the first entry and export the buildfile again. -->
+<project basedir="." default="build" name="1312MAIAgent">
     <property environment="env"/>
     <property name="BasilicaCore.location" value="../BasilicaCore"/>
     <property name="BaseAgent.location" value="../BaseAgent"/>
