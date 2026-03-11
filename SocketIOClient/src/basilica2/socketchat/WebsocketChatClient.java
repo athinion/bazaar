@@ -51,7 +51,7 @@ import edu.cmu.cs.lti.basilica2.core.Event;
 public class WebsocketChatClient extends Component implements ChatClient
 {	
 
-	String socketURL = "http://localhost:8000";
+	String socketURL = "http://86.50.170.225:8000";
 	String socketSubURL = null;
 	String agentUserName = "ROBOT";
 	String agentRoomName = "ROOM";
@@ -245,7 +245,7 @@ public class WebsocketChatClient extends Component implements ChatClient
 	        Logger.commonLog(getClass().getSimpleName(),Logger.LOG_NORMAL,"WebsocketChatClient, processEvent, MAITriggerEvent - triggerName: " + mte.getTriggerName());
 			try
 			{
-				//insertSendCommandEvent(sce.getCommand());
+				insertMAITriggerEvent(mte.getTriggerName());
 			}
 			catch (Exception e1)
 			{
