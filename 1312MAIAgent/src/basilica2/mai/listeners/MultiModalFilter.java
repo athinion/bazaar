@@ -105,6 +105,11 @@ public class MultiModalFilter extends BasilicaAdapter
 		}
 	}
 
+	 public MultiModalFilter(Agent a, String n, String pf)
+	    {
+	        this(a);
+	    }
+	
 	public void setTrackMode(boolean m)
 	{
 		trackLocation = m;

@@ -29,10 +29,19 @@ public class MAIActor implements BasilicaListener
 	}};
 
 	public MAIActor(Agent a) {
-    	promptTable = new PromptTable("runtime/plans/intervention_prompts_en.xml");
+    	promptTable = new PromptTable("plans/intervention_prompts_en.xml");
     	for(String k : PRIORITY.keySet()) lastFireTime.put(k, 0L);
 	}
-
+	
+	public MAIActor(Agent a, String n, String pf)
+	{
+	    this(a);
+	}
+	
+	public MAIActor() {
+	    promptTable = new PromptTable("plans/intervention_prompts_en.xml");
+	    for(String k : PRIORITY.keySet()) lastFireTime.put(k, 0L);
+	}
 	
 	@Override
 	public void processEvent(InputCoordinator source, Event event)
