@@ -18,6 +18,19 @@ public class MAIAgentOperation extends BaseAgentOperation
     public static void main(final String[] args) 
     {
         initializeSystemProperties("system.properties");
+        final MAIAgentOperation thisOperation = new MAIAgentOperation();
+        thisOperation.startOperation();
+        thisOperation.launchAgent("testroom", false);
+        // Keep the process alive
+        try { Thread.currentThread().join(); } catch (InterruptedException e) {}
+    }
+}
+
+/* public class MAIAgentOperation extends BaseAgentOperation
+{
+    public static void main(final String[] args) 
+    {
+        initializeSystemProperties("system.properties");
         
         java.awt.EventQueue.invokeLater(new Runnable() 
         {
@@ -26,6 +39,8 @@ public class MAIAgentOperation extends BaseAgentOperation
             public void run() 
             {
             	MAIAgentOperation thisOperation = new MAIAgentOperation();
+            	
+            	
                 BaseAgentUI thisUI = new ConditionAgentUI(thisOperation, "Test1");
                 //thisUI.setLocation(windowLoc);
                 thisOperation.setUI(thisUI);
@@ -40,3 +55,4 @@ public class MAIAgentOperation extends BaseAgentOperation
 
 
 }
+*/
