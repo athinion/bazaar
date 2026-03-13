@@ -27,28 +27,32 @@ public class ConditionalListenStepHandler implements StepHandler
 		if(cognitivelistener == null)
 		{
 			cognitivelistener = new CognitiveListener(a);
+			Logger.commonLog(getClass().getSimpleName(),Logger.LOG_NORMAL,"Constructing cognitive listener");
 		}
-/*
+
 		if(metacognitivelistener == null)
 		{
 			metacognitivelistener = new MetacognitiveListener(a);
+			Logger.commonLog(getClass().getSimpleName(),Logger.LOG_NORMAL,"Constructing metacognitive listener");
 		}
-
+/*
 		if (behaviorallistener == null)
 		{
 			behaviorallistener = new BehavioralListener(a);
-		}
+		} */
 
 		if (sociallistener == null)
 		{
 			sociallistener = new SocialListener(a);
+			Logger.commonLog(getClass().getSimpleName(),Logger.LOG_NORMAL,"Constructing social listener");
 		}
 
 		if (affectivelistener == null)
 		{
 			affectivelistener = new AffectiveListener(a);
+			Logger.commonLog(getClass().getSimpleName(),Logger.LOG_NORMAL,"Constructing affective listener");
 		}
-		*/
+		
 		
 		//revoicer.setDelegate(new EndStepOnStopListening(overmind, currentStep.name));
         

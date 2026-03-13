@@ -1,5 +1,6 @@
 package basilica2.mai.listeners;
 
+import java.awt.Window;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,26 +30,23 @@ public class CognitiveListener implements BasilicaPreProcessor {
 	
     //private static final int TRIGGER_THRESHOLD = 3;
     private static final String TRIGGER_NAME = "COGNITIVE";
-    private static final double PRIORITY = 2.0; // Priority level
-	
-	
+  //  private static final double PRIORITY = 2.0; // Priority level
 
 	public CognitiveListener(Agent a) {
 		RollingWindow.sharedWindow().setWindowSize(HISTORY_WINDOW, 2);
+		Logger.commonLog(TRIGGER_NAME, TRIGGER_NAME, "rolling window created");
 	}
-
-
+	
 
 	/**
-	 * @param source the InputCoordinator - to push new events to. (Modified events don't need to be re-pushed).
-	 * @param event an incoming event which matches one of this preprocessor's advertised classes (see getPreprocessorEventClasses)
-	 * 
 	 * Preprocess an incoming event, by modifying this event or creating a new event in response. 
 	 * All original and new events will be passed by the InputCoordinator to the second-stage Reactors ("BasilicaListener" instances).
 	 */
 	@Override
 	public void preProcessEvent(InputCoordinator source, Event event)
 	{
+		
+		Logger.commonLog(TRIGGER_NAME, TRIGGER_NAME, "Pre-processing event");
 
 		if (!(event instanceof MessageEvent)) {
             return;
@@ -61,7 +59,9 @@ public class CognitiveListener implements BasilicaPreProcessor {
 			return;
 		
 		// Add to rolling window
-		RollingWindow.sharedWindow().addEvent(event, TRIGGER_NAME, "DOM_CONN");
+		RollingWindow.sharedWindow().addEvent(me, "CONN+DOM");
+		Logger.commonLog(getClass().getSimpleName(), Logger.LOG_NORMAL, "Cognitive Event added");
+		Logger.commonLog(getClass().getSimpleName(),Logger.LOG_NORMAL,RollingWindow.sharedWindow().getEvents("CONN+DOM").toString());
 		
 		MAITriggerEvent MAITriggerEvent = new MAITriggerEvent(source, TRIGGER_NAME);
       	System.err.println("CognitiveListener, execute - MAITriggerEvent created");
@@ -71,9 +71,10 @@ public class CognitiveListener implements BasilicaPreProcessor {
 		// if DOM+CON has been identified more than 3 times in the last 5 minutes
 		
 		//returns a count of events occurring in the last secondsAgo seconds matching ALL keys
-		if (RollingWindow.sharedWindow().countAnyEvents(HISTORY_WINDOW, "DOM", "CONN") > 3)
+		if (RollingWindow.sharedWindow().countEvents(HISTORY_WINDOW, "CONN+DOM") >= 3)
 		{
 			// Then propose a cognitive trigger
+			Logger.commonLog(getClass().getSimpleName(), Logger.LOG_NORMAL, "Trigger should fire here!!!");
 			 Logger.commonLog(getClass().getSimpleName(), Logger.LOG_NORMAL,
                 "TRIGGER FIRED: COGNITIVE");
             

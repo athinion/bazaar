@@ -35,7 +35,7 @@ public class RollingWindow implements TimeoutReceiver
 		{
 			event = e;
 			timestamp = System.currentTimeMillis();
-			this.keys.add("all");
+			//this.keys.add("all");
 			Collections.addAll(this.keys, keys);
 		}
 		
@@ -178,6 +178,7 @@ public class RollingWindow implements TimeoutReceiver
 		long now = System.currentTimeMillis();
 		long then = (long) (now - 1000*secondsAgo);
 		log(getClass().getSimpleName(),Logger.LOG_NORMAL,(now-then)+" ms window");
+		System.out.println("Getting into countEvents");
 		int count = 0;
 		
 		List<String> keyList = Arrays.asList(keys);
@@ -185,10 +186,14 @@ public class RollingWindow implements TimeoutReceiver
 		for(int i = allEntries.size(); i > 0; i--)
 		{
 			Entry edwin = allEntries.get(i-1);
+			System.out.println("ROLLING: edwin is "+ edwin.toString());
 			if(edwin.timestamp >= then)
 			{
-				if(edwin.keys.containsAll(keyList))
+				System.out.println("Did it go in the IF?");
+				if(edwin.keys.containsAll(keyList)) {
+					System.out.println("PLEASE ADD IT");
 					count++;
+				}
 			}
 			else
 			{
@@ -232,9 +237,13 @@ public class RollingWindow implements TimeoutReceiver
 	
 	public void addEvent(Event e, String... keys)
 	{
+		for (int i=0; i<keys.length; i++) {
+			System.out.println("ROLLING: keys received are: " + keys[i]);
+		}
+		
+		System.out.println("ROLLING: events received: " + e.toString());
 		if(entryMap.containsKey(e))
 			Collections.addAll(entryMap.get(e).keys, keys);
-		
 		else
 		{
 			Entry edwin = new Entry(e, keys);

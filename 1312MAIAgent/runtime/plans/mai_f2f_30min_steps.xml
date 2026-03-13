@@ -13,10 +13,10 @@
 
 <!-- in the timeout that is in the stage level,it means that after <timeout> value, this stage will execute no matter what -->
 
-<!-- DELAY SHOULD BE PUT IN ALL STEPS HERE, NOT TIMEOUT -->
+<!-- DELAY SHOULD BE PUT IN ALL STEPS HERE, NOT TIMEOUT, delay=300 in silence step -->
     <stage name="session">
-        <step type="silence" timeout="300">SILENCE</step>
-        <step type="listen" timeout="1200">LISTEN</step>
+        <step type="silence" delay="300">SILENCE</step>
+        <step type="listen" delay="1200">LISTEN</step>
         <step type="prompt" timeout="1000">END_OF_SESSION</step>
         <step type="chatlog" delay="2" timeout="1000">CHATLOG</step>
     </stage>

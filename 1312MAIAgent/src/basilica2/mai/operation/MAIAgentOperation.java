@@ -24,9 +24,10 @@ public class MAIAgentOperation extends BaseAgentOperation
         // Keep the process alive
         try { Thread.currentThread().join(); } catch (InterruptedException e) {}
     }
-}
+} 
 
-/* public class MAIAgentOperation extends BaseAgentOperation
+/*
+public class MAIAgentOperation extends BaseAgentOperation
 {
     public static void main(final String[] args) 
     {
