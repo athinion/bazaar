@@ -5,36 +5,45 @@ import edu.cmu.cs.lti.basilica2.core.Event;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.io.PrintWriter;
-import java.io.IOException;
-import java.net.Socket;
-
-import org.json.JSONObject;
-import org.json.JSONException;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import basilica2.agents.components.InputCoordinator;
-import basilica2.agents.data.PromptTable;
+import basilica2.agents.components.OutputCoordinator;
 import basilica2.agents.events.MessageEvent;
-import basilica2.agents.events.PromptEvent;
+import basilica2.agents.events.priority.PriorityEvent;
 import basilica2.agents.listeners.BasilicaListener;
-
 
 public class MAIActor implements BasilicaListener
 {
 
-	// Received MAITriggerEvents from all MAI listeners
-	// Prioritizes them according to priority ranking, forces cooldown (=3mins) and sends intervention prompts to the output coordinator
-	// The priority order is (from highest to lowest): METACOGNITIVE, COGNITIVE, BEHAVIORAL, SOCIOEMOTIONAL, SHARED_PERSPECTIVE
-	
-	private PromptTable promptTable;
+	// queue storing trigger events
+	ConcurrentLinkedQueue<MessageEvent> q = new ConcurrentLinkedQueue<>();
+
+	// last time each trigger fired
 	private Map<String,Long> lastFireTime = new HashMap<>();
+
 	private static final long COOLDOWN_MS = 180000; // 3 min
+	private static final long DECISION_WAIT_MS = 2000; // wait before deciding
+	private static final long TRIGGER_EXPIRE_MS = 5000; // discard old triggers
+
+	private boolean timerRunning = false;
+
+	private ScheduledExecutorService scheduler =
+			Executors.newSingleThreadScheduledExecutor();
+
+	// priority ranking
 	private static final Map<String,Integer> PRIORITY = new HashMap<String,Integer>() {{
-    	put("METACOGNITIVE",1); put("COGNITIVE",2); put("BEHAVIORAL",3);
-   		put("AFFECTIVE",4); put("SOCIAL",5);
+    	put("METACOGNITIVE",1);
+		put("COGNITIVE",2);
+		put("BEHAVIORAL",3);
+   		put("AFFECTIVE",4);
+		put("SOCIAL",5);
 	}};
-	
-	// Map trigger types to audio categories for client_mic.py
+
+	// Map trigger types to audio categories
 	private static final Map<String, String> TRIGGER_TO_MOVE = new HashMap<String, String>() {{
 		put("METACOGNITIVE", "metacognitive");
 		put("COGNITIVE", "cognitive");
@@ -42,145 +51,112 @@ public class MAIActor implements BasilicaListener
 		put("AFFECTIVE", "socio_emotional");
 		put("SOCIAL", "shared_perspective");
 	}};
-	
-	// Socket configuration for sending to pipeline
-	private String socketHost = "localhost";
-	private int socketPort = 9999;
-	private Socket socket;
-	private PrintWriter socketWriter;
 
 	public MAIActor(Agent a) {
-    	promptTable = new PromptTable("plans/intervention_prompts_en.xml");
-    	for(String k : PRIORITY.keySet()) lastFireTime.put(k, 0L);
-    	initializeSocket();
+    	for(String k : PRIORITY.keySet())
+			lastFireTime.put(k, 0L);
 	}
-	
+
 	public MAIActor(Agent a, String n, String pf)
 	{
 	    this(a);
 	}
-	
+
 	public MAIActor() {
-	    promptTable = new PromptTable("plans/intervention_prompts_en.xml");
-	    for(String k : PRIORITY.keySet()) lastFireTime.put(k, 0L);
-	    initializeSocket();
+	    for(String k : PRIORITY.keySet())
+			lastFireTime.put(k, 0L);
 	}
-	
+
 	@Override
 	public void processEvent(InputCoordinator source, Event event)
 	{
 		if(!(event instanceof MessageEvent)) return;
+
     	MessageEvent me = (MessageEvent) event;
-
-   	 // identify trigger type from annotations
-    	String triggerType = null;
-    	if(me.hasAnnotation("COGNITIVE_TRIGGER")) {
-    		triggerType = "COGNITIVE";
-    	} else if(me.hasAnnotation("METACOGNITIVE_TRIGGER")) {
-    		triggerType = "METACOGNITIVE";
-    	} else if(me.hasAnnotation("BEHAVIORAL_TRIGGER")) {
-    		triggerType = "BEHAVIORAL";
-    	} else if(me.hasAnnotation("AFFECTIVE_TRIGGER")) {
-    		triggerType = "AFFECTIVE";
-    	} else if(me.hasAnnotation("SOCIAL_TRIGGER")) {
-    		triggerType = "SOCIAL";
+    	
+    	for (int i=0; i<me.getAllAnnotations().length; i++) {
+    		System.out.println("Extracting trigger type from message event: " + me.getAllAnnotations()[i]);
     	}
-    	
-    	if(triggerType == null) return;
-    	
-    	// Check cooldown
-    	long last = lastFireTime.getOrDefault(triggerType, 0L);
-    	if(System.currentTimeMillis() - last < COOLDOWN_MS) return;
 
-    	// Get prompt text
-    	String promptText = promptTable.lookup(triggerType);
-    	if(promptText == null || promptText.isEmpty()) return;
+		String triggerType = me.getAllAnnotations()[0];
 
-    	// Create PromptEvent and enqueue so PromptActor handles delivery
-    	PromptEvent pe = new PromptEvent(source, promptText, me.getFrom());
-    	source.addPreprocessedEvent(pe);
+		// Ignore messages that are not valid triggers
+		if(!PRIORITY.containsKey(triggerType))
+			return;
 
-    	// Set cooldown
-    	lastFireTime.put(triggerType, System.currentTimeMillis());
-    	
-    	// Send JSON message to pipeline with audio category
-    	sendJsonToPipeline(triggerType, promptText, me.getText());
+    	System.out.println("MAIActor received trigger: " + triggerType);
+
+    	// add event to queue
+    	q.add(me);
+
+    	// if this is the first event → start decision timer
+    	if (!timerRunning) {
+
+    		timerRunning = true;
+
+    		scheduler.schedule(() -> decideTrigger(source),
+    				DECISION_WAIT_MS,
+    				TimeUnit.MILLISECONDS);
+    	}
+	}
+
+	// Called when timer expires
+	private void decideTrigger(InputCoordinator source)
+	{
+		long now = System.currentTimeMillis();
+
+		MessageEvent best = null;
+		int bestPriority = Integer.MAX_VALUE;
+
+		for(MessageEvent e : q)
+		{
+			// discard expired triggers
+			if(now - e.getTimestamp() > TRIGGER_EXPIRE_MS)
+				continue;
+
+			String triggerType = e.getText();
+
+			int p = PRIORITY.getOrDefault(triggerType, Integer.MAX_VALUE);
+
+			long lastFire = lastFireTime.getOrDefault(triggerType, 0L);
+
+			// enforce cooldown
+			if(now - lastFire < COOLDOWN_MS)
+				continue;
+
+			if(p < bestPriority)
+			{
+				bestPriority = p;
+				best = e;
+			}
+		}
+
+		if(best != null)
+		{
+			fireTrigger(source, best);
+		}
+
+		q.clear();
+		timerRunning = false;
+	}
+
+	// Send chosen trigger forward
+	private void fireTrigger(InputCoordinator source, MessageEvent e)
+	{
+		String triggerType = e.getText();
+
+		System.out.println("MAIActor firing trigger: " + triggerType);
+
+		lastFireTime.put(triggerType, System.currentTimeMillis());
+
+		source.pushProposal(PriorityEvent.makeBlackoutEvent("macro", "MAITriggerEvent", e, OutputCoordinator.HIGH_PRIORITY, 5.0, 2));
 	}
 
 
-	/**
-	 * @return the classes of events this reactor will respond to
-	 */
 	@Override
 	public Class[] getListenerEventClasses()
 	{
-		//both RepeatEvents and MessageEvents will be forwarded to this reactor. 
 		return new Class[]{MessageEvent.class};
-	}
-	
-	/**
-	 * Initialize socket connection to pipeline (client_mic.py)
-	 */
-	private void initializeSocket() {
-		try {
-			socket = new Socket(socketHost, socketPort);
-			socketWriter = new PrintWriter(socket.getOutputStream(), true);
-			System.out.println("[MAIActor] Connected to pipeline at " + socketHost + ":" + socketPort);
-		} catch(IOException e) {
-			System.out.println("[MAIActor] Warning: Could not connect to pipeline socket at " + socketHost + ":" + socketPort + " - " + e.getMessage());
-			socket = null;
-			socketWriter = null;
-		}
-	}
-	
-	/**
-	 * Ensure socket is still connected, reconnect if needed
-	 */
-	private void ensureSocketConnected() {
-		if(socket == null || socket.isClosed() || !socket.isConnected()) {
-			System.out.println("[MAIActor] Socket disconnected, attempting to reconnect...");
-			initializeSocket();
-		}
-	}
-	
-	/**
-	 * Send JSON message to pipeline with trigger response
-	 * Format: {"response": "...", "selected_move": "cognitive|metacognitive|behavioral|socio_emotional|shared_perspective", "transcription": "..."}
-	 */
-	private void sendJsonToPipeline(String triggerType, String response, String transcription) {
-		if(socket == null || socketWriter == null) {
-			System.out.println("[MAIActor] Socket not initialized, skipping send");
-			return;
-		}
-		
-		try {
-			ensureSocketConnected();
-			
-			String audioMove = TRIGGER_TO_MOVE.get(triggerType);
-			if(audioMove == null) {
-				System.out.println("[MAIActor] No audio move mapping for trigger: " + triggerType);
-				return;
-			}
-			
-			// Create JSON message
-			JSONObject jsonMessage = new JSONObject();
-			jsonMessage.put("response", response);
-			jsonMessage.put("selected_move", audioMove);
-			jsonMessage.put("transcription", transcription);
-			
-			// Send through socket
-			socketWriter.println(jsonMessage.toString());
-			socketWriter.flush();
-			
-			System.out.println("[MAIActor] Sent to pipeline: " + jsonMessage.toString());
-			
-		} catch(JSONException e) {
-			System.out.println("[MAIActor] JSON error: " + e.getMessage());
-		} catch(IOException e) {
-			System.out.println("[MAIActor] Socket error: " + e.getMessage());
-			socket = null;
-			socketWriter = null;
-		}
 	}
 
 }

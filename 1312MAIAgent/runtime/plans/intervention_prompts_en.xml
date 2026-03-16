@@ -17,13 +17,13 @@
         <text>Let’s think for a moment – what does everyone think about their own participation so far?</text>
         <text>How could you change your current way of working to ensure that everyone can participate? </text>
     </prompt>
-     <prompt id="SOCIOEMOTIONAL">
+     <prompt id="AFFECTIVE">
         <text>It seems emotions are running a bit high. How could you talk to each other in a friendlier manner?</text>
         <text>Cooperation is sometimes challenging! How can you make sure everyone can still participate in good spirits?</text>
         <text>Every member is needed to form a functioning group. How could you better support each other?</text>
         <text>Take a moment to think – how could you express your thoughts in a way that is not hurtful to others.</text>
     </prompt>
-     <prompt id="SHARED_PERSPECTIVE">
+     <prompt id="SOCIAL">
         <text>Well done on developing your thoughts! But are you still thinking about this from your own perspectives? Think how you could progress as a group.</text>
         <text>I noticed that you might be thinking about this from individual points of view. What could be your joint plan for solving the task?</text>
         <text>Could I help? Rethink what you are trying to accomplish here as a group. By doing this, you can support each other and move on.</text>
