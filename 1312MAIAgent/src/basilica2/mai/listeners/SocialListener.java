@@ -73,10 +73,13 @@ public class SocialListener implements BasilicaPreProcessor {
 			 Logger.commonLog(getClass().getSimpleName(), Logger.LOG_NORMAL,
                 "TRIGGER FIRED: SOCIAL");
             
-            MessageEvent triggerMsg = new MessageEvent(source, "MAI_LISTENER", TRIGGER_NAME, "SOCIAL_TRIGGER");
+            MessageEvent triggerMsg = new MessageEvent(source, "MAI_LISTENER", TRIGGER_NAME, "SOCIAL");
             
-			triggerMsg.addAnnotation("SOCIAL_TRIGGER", Arrays.asList("SOCIAL"));
-			
+			triggerMsg.addAnnotation("SOCIAL", Arrays.asList("SOCIAL"));
+			 System.out.println("Social trigger msg that is sent to MAI Actor: " + triggerMsg.toString());
+				for (int i=0; i<triggerMsg.getAllAnnotations().length; i++) {
+		    		System.out.println("Extracting social trigger msg annotations: " + triggerMsg.getAllAnnotations()[i]);
+		    	}
 			source.addPreprocessedEvent(triggerMsg);
 			
 			

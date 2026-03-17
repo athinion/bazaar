@@ -78,10 +78,15 @@ public class MetacognitiveListener implements BasilicaPreProcessor {
 			 Logger.commonLog(getClass().getSimpleName(), Logger.LOG_NORMAL,
                 "TRIGGER FIRED: METACOGNITIVE");
             
-            MessageEvent triggerMsg = new MessageEvent(source, "MAI_LISTENER", TRIGGER_NAME, "METACOGNITIVE_TRIGGER");
+            MessageEvent triggerMsg = new MessageEvent(source, "MAI_LISTENER", TRIGGER_NAME, "METACOGNITIVE");
             
             // add an annotation to the message for "metacognitive"
-            triggerMsg.addAnnotation("METACOGNITIVE_TRIGGER", Arrays.asList("METACOGNITIVE"));
+            triggerMsg.addAnnotation("METACOGNITIVE", Arrays.asList("METACOGNITIVE"));
+            System.out.println("Metacognitive trigger msg that is sent to MAI Actor: " + triggerMsg.toString());
+			for (int i=0; i<triggerMsg.getAllAnnotations().length; i++) {
+	    		System.out.println("Extracting metacognitive trigger msg annotations: " + triggerMsg.getAllAnnotations()[i]);
+	    	}
+			
             source.addPreprocessedEvent(triggerMsg);
 			
 			

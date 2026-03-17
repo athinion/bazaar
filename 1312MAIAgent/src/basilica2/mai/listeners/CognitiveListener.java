@@ -81,9 +81,9 @@ public class CognitiveListener implements BasilicaPreProcessor {
             MessageEvent triggerMsg = new MessageEvent(source, "MAI_LISTENER", TRIGGER_NAME, "COGNITIVE");
             
 			triggerMsg.addAnnotation("COGNITIVE", Arrays.asList("COGNITIVE"));
-			System.out.println("Trigger msg that is sent to MAI Actor: " + triggerMsg.toString());
+			System.out.println("Cognitive trigger msg that is sent to MAI Actor: " + triggerMsg.toString());
 			for (int i=0; i<triggerMsg.getAllAnnotations().length; i++) {
-	    		System.out.println("Extracting trigger msg annotations: " + triggerMsg.getAllAnnotations()[i]);
+	    		System.out.println("Extracting cognitive trigger msg annotations: " + triggerMsg.getAllAnnotations()[i]);
 	    	}
 			
 			source.addPreprocessedEvent(triggerMsg);

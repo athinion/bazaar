@@ -70,3 +70,6 @@ but wait
 \bhow\s+much\b
 \bhow\s+many\b
 ^(uh+|um+|hmm+|mm+|huh+)\b
+well
+well so
+so

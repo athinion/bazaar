@@ -74,10 +74,13 @@ public class AffectiveListener implements BasilicaPreProcessor {
 			 Logger.commonLog(getClass().getSimpleName(), Logger.LOG_NORMAL,
                 "TRIGGER FIRED: AFFECTIVE");
             
-            MessageEvent triggerMsg = new MessageEvent(source, "MAI_LISTENER", TRIGGER_NAME, "AFFECTIVE_TRIGGER");
+            MessageEvent triggerMsg = new MessageEvent(source, "MAI_LISTENER", TRIGGER_NAME, "AFFECTIVE");
             
-			triggerMsg.addAnnotation("AFFECTIVE_TRIGGER", Arrays.asList("AFFECTIVE"));
-			
+			triggerMsg.addAnnotation("AFFECTIVE", Arrays.asList("AFFECTIVE"));
+			 System.out.println("Affective trigger msg that is sent to MAI Actor: " + triggerMsg.toString());
+				for (int i=0; i<triggerMsg.getAllAnnotations().length; i++) {
+		    		System.out.println("Extracting affective trigger msg annotations: " + triggerMsg.getAllAnnotations()[i]);
+		    	}
 			source.addPreprocessedEvent(triggerMsg);
 			
 			
