@@ -1600,6 +1600,10 @@ io.sockets.on('connection', async (socket) => {
         console.log("socket.on('sendcommandeventwithroom'): room = " + room + "  socket.clientID = " + socket.clientID + " command = " + command);
         io.sockets.in(room).emit('sendcommandevent', command);		
 	});
+        socket.on('sendtrigger', async (room, command) => {
+                console.log("socket.on('sendtrigger'): room = " + room + " command = " + command);
+                io.sockets.in(room).emit('sendtrigger', room, command);
+        });
 
 
 

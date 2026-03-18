@@ -14,8 +14,8 @@
     <property name="ECLIPSE_HOME" value="../../../../Applications/eclipse"/>
     <property name="workspace_loc:BaseAgent/runtime" value="runtime"/>
     <property name="debuglevel" value="source,lines,vars"/>
-    <property name="target" value="1.6"/>
-    <property name="source" value="1.6"/>
+    <property name="target" value="1.8"/>
+    <property name="source" value="1.8"/>
     <path id="BasilicaCore.classpath">
         <pathelement location="${BasilicaCore.location}/bin"/>
         <pathelement location="${BasilicaCore.location}/lib/OtherLibraries/JGraph/jgraph.jar"/>
@@ -24,6 +24,7 @@
         <pathelement location="${BasilicaCore.location}/lib/OtherLibraries/Xerces/xercesImpl.jar"/>
         <pathelement location="${BasilicaCore.location}/lib/OtherLibraries/Xerces/xml-apis.jar"/>
         <pathelement location="${BasilicaCore.location}/lib/OtherLibraries/Utilities.jar"/>
+        <pathelement location="lib/json-org.jar"/>
     </path>
     <path id="BaseAgent.classpath">
         <pathelement location="bin"/>
@@ -58,6 +59,7 @@
         <pathelement location="lib/Environments/ConcertChat/Libraries/jdic.jar"/>
         <pathelement location="lib/Environments/ConcertChat/Libraries/log4j.jar"/>
         <pathelement location="${BasilicaCore.location}/lib/OtherLibraries/Utilities.jar"/>
+        <pathelement location="lib/json-org.jar"/>
         <pathelement location="lib/jopt/jopt-simple-4.3.jar"/>
         <pathelement location="lib/Environments/Jabber/smack.jar"/>
         <pathelement location="lib/Environments/Jabber/smackx-debug.jar"/>

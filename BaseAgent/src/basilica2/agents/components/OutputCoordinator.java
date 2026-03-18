@@ -8,8 +8,8 @@ import java.util.Map;
 import java.time.LocalDateTime;
 
 import org.jivesoftware.smack.packet.Message;
-import org.json.JSONArray;
-import org.json.JSONException;
+
+
 
 import basilica2.agents.events.BotMessageEvent;
 import basilica2.agents.events.MessageEvent;
@@ -27,7 +27,7 @@ import edu.cmu.cs.lti.basilica2.core.Component;
 import edu.cmu.cs.lti.basilica2.core.Event;
 import edu.cmu.cs.lti.project911.utils.log.Logger;
 import edu.cmu.cs.lti.project911.utils.time.TimeoutReceiver;
-import smartlab.communication.CommunicationManager; 
+ 
 // import org.zeromq.SocketType;
 // import org.zeromq.ZMQ;
 // import org.zeromq.ZContext;
@@ -59,7 +59,7 @@ public class OutputCoordinator extends Component implements TimeoutReceiver
 	private Boolean multimodalFormatToPSI = true; 
 	private Boolean outputBotMessage = false;
 	private Boolean useListenerName = false;
-	CommunicationManager psiCommunicationManager; 
+	 
 // 	ZeroMQClient psiCommunicationManager; 
 //  private ZMQ.Socket publisher;
 //  ZContext context; 
@@ -118,7 +118,7 @@ public class OutputCoordinator extends Component implements TimeoutReceiver
 	}
 	
 	private void initializePSI() {
-		psiCommunicationManager = new CommunicationManager();
+		
 // 		context = new ZContext(); 
 // 		try {                      
 // 	    	publisher = context.createSocket(SocketType.PUB);
@@ -422,7 +422,7 @@ public class OutputCoordinator extends Component implements TimeoutReceiver
 			BasilicaListener CHL = IC.getListenerByName("ChatHistoryListener");
 			try {
 				((ChatHistoryListener) CHL).handleMessageEvent(IC, me);
-			} catch (JSONException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -544,10 +544,10 @@ public class OutputCoordinator extends Component implements TimeoutReceiver
 			broadcast(newme);
 			MessageEventLogger.logMessageEvent(newme);
 			System.out.println("==== OutputCoordinator, publishMessagetoPSI - Sending to topic " + bazaarToPSITopic + " the message == " + messageString + " ==");
-			psiCommunicationManager.msgSender(bazaarToPSITopic,messageString);
+			
 		} else {
 			System.out.println("==== OutputCoordinator, publishMessagetoPSI - Sending to topic " + bazaarToPSITopic + " the message == " + messageString + " ==");
-			psiCommunicationManager.msgSender(bazaarToPSITopic,messageString);
+			
 		}
 		
 // 		String topicMessage = bazaarToPSITopic + ":true" + multiModalDelim + messageString; 
