@@ -7,8 +7,10 @@ import java.util.Random;
 
 import edu.cmu.cs.lti.basilica2.core.Event;
 import basilica2.agents.components.InputCoordinator;
+import basilica2.agents.components.OutputCoordinator;
 import basilica2.agents.events.MAITriggerEvent;
 import basilica2.agents.events.MessageEvent;
+import basilica2.agents.events.priority.PriorityEvent;
 import basilica2.agents.listeners.BasilicaPreProcessor;
 import basilica2.agents.components.StateMemory;
 import edu.cmu.cs.lti.basilica2.core.Agent;
@@ -38,9 +40,6 @@ public class MetacognitiveListener implements BasilicaPreProcessor {
 
 
 	/**
-	 * @param source the InputCoordinator - to push new events to. (Modified events don't need to be re-pushed).
-	 * @param event an incoming event which matches one of this preprocessor's advertised classes (see getPreprocessorEventClasses)
-	 * 
 	 * Preprocess an incoming event, by modifying this event or creating a new event in response. 
 	 * All original and new events will be passed by the InputCoordinator to the second-stage Reactors ("BasilicaListener" instances).
 	 */
@@ -61,21 +60,33 @@ public class MetacognitiveListener implements BasilicaPreProcessor {
 
 		
 		// Add to rolling window
-		RollingWindow.sharedWindow().addEvent(event, TRIGGER_NAME, "DOM_COO");
+		RollingWindow.sharedWindow().addEvent(me, "DOM+COO");
 		
 		// if DOM+COO has been identified more than 3 times in the last 5 minutes
+		Logger.commonLog(getClass().getSimpleName(), Logger.LOG_NORMAL, "Metacognitive Event added");
 		
+		
+		MAITriggerEvent MAITriggerEvent = new MAITriggerEvent(source, TRIGGER_NAME);
+      	System.err.println("MetacognitiveListener, execute - MAITriggerEvent created");
+      	Logger.commonLog(getClass().getSimpleName(),Logger.LOG_NORMAL,"MetacognitiveListener, execute - MAITriggerEvent created");
+		source.pushProposal(PriorityEvent.makeBlackoutEvent("macro", "MAITriggerEvent", MAITriggerEvent, OutputCoordinator.HIGH_PRIORITY, 5.0, 2));
 		//returns a count of events occurring in the last secondsAgo seconds matching ALL keys
-		if (RollingWindow.sharedWindow().countAnyEvents(HISTORY_WINDOW, "DOM", "COO") > 3)
+		
+		if (RollingWindow.sharedWindow().countAnyEvents(HISTORY_WINDOW, "DOM+COO") >= 3)
 		{
 			// Then propose a cognitive trigger
 			 Logger.commonLog(getClass().getSimpleName(), Logger.LOG_NORMAL,
-                "TRIGGER FIRED: COGNITIVE");
+                "TRIGGER FIRED: METACOGNITIVE");
             
-            MessageEvent triggerMsg = new MessageEvent(source, "MAI_LISTENER", TRIGGER_NAME, "METACOGNITIVE_TRIGGER");
+            MessageEvent triggerMsg = new MessageEvent(source, "MAI_LISTENER", TRIGGER_NAME, "METACOGNITIVE");
             
             // add an annotation to the message for "metacognitive"
-            triggerMsg.addAnnotation("METACOGNITIVE_TRIGGER", Arrays.asList("METACOGNITIVE"));
+            triggerMsg.addAnnotation("METACOGNITIVE", Arrays.asList("METACOGNITIVE"));
+            System.out.println("Metacognitive trigger msg that is sent to MAI Actor: " + triggerMsg.toString());
+			for (int i=0; i<triggerMsg.getAllAnnotations().length; i++) {
+	    		System.out.println("Extracting metacognitive trigger msg annotations: " + triggerMsg.getAllAnnotations()[i]);
+	    	}
+			
             source.addPreprocessedEvent(triggerMsg);
 			
 			

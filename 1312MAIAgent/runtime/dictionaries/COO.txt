@@ -114,3 +114,5 @@ clean up
 /\\b(put|place|pour|lower)\\s+.*\\s+(in|into|onto|there|here)\\b/
 /\\b(read)\\s+(the\\s+)?(instructions?|task|next|this|that|aloud)\\b/
 /\\b(follow)\\s+(the\\s+)?instructions?\\b/
+description
+it say(s)
