@@ -39,6 +39,8 @@ public class MAIActor implements BasilicaListener
 
 	// Cooldown period: once a trigger fires, it cannot fire again for 3 minutes
 	private static final long COOLDOWN_MS = 180000;
+	// Global last fire time - blocks ALL triggers after any one fires
+	private long globalLastFireTime = 0L;
 
 	// Time window to wait and collect multiple competing triggers
 	private static final long DECISION_WAIT_MS = 2000;
@@ -180,6 +182,7 @@ public class MAIActor implements BasilicaListener
 
 		// Update cooldown timestamp
 		lastFireTime.put(triggerType, System.currentTimeMillis());
+		globalLastFireTime = System.currentTimeMillis();
 
 		// Send event with high priority to OutputCoordinator
 		source.pushProposal(
