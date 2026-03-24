@@ -14,7 +14,7 @@ import basilica2.agents.operation.BaseAgentUI;
 import basilica2.agents.operation.ConditionAgentUI;
 
 
-
+/*
 public class MAIAgentOperation extends BaseAgentOperation
 {
     public static void main(final String[] args) 
@@ -28,9 +28,9 @@ public class MAIAgentOperation extends BaseAgentOperation
     }
 } 
 
-
+*/
 // dummy comment
-/*
+
 public class MAIAgentOperation extends BaseAgentOperation
 {
     public static void main(final String[] args) 
@@ -60,4 +60,3 @@ public class MAIAgentOperation extends BaseAgentOperation
 
 
 }
-*/

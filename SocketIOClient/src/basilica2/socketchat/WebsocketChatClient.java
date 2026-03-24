@@ -51,7 +51,7 @@ import edu.cmu.cs.lti.basilica2.core.Event;
 public class WebsocketChatClient extends Component implements ChatClient
 {	
 
-	String socketURL = "http://127.0.0.1:8000";
+	String socketURL = "http://localhost:8080";
 	String socketSubURL = null;
 	String agentUserName = "ROBOT";
 	String agentRoomName = "ROOM";
