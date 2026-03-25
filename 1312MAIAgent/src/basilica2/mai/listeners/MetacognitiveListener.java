@@ -54,14 +54,17 @@ public class MetacognitiveListener implements BasilicaPreProcessor {
 		
 		
 		// this was made according to the logs, but could it also work as "!me.hasAnnotations("DOM", "CON")
-		if (!me.hasAnnotations("DOM") || (!me.hasAnnotations("COO")))
+//		if (!me.hasAnnotations("DOM") || (!me.hasAnnotations("COO")))
+	//		return;
+		
+//		if (!me.hasAnnotations("DOM") || (!me.hasAnnotations("COO")))
+//			return;
+		if (!me.hasAnnotations("COO"))
 			return;
-
-
 		
 		// Add to rolling window
-		RollingWindow.sharedWindow().addEvent(me, "DOM+COO");
-		
+		//RollingWindow.sharedWindow().addEvent(me, "DOM+COO");
+		RollingWindow.sharedWindow().addEvent(me, "COO");
 		// if DOM+COO has been identified more than 3 times in the last 5 minutes
 		Logger.commonLog(getClass().getSimpleName(), Logger.LOG_NORMAL, "Metacognitive Event added");
 		
@@ -72,7 +75,8 @@ public class MetacognitiveListener implements BasilicaPreProcessor {
 		source.pushProposal(PriorityEvent.makeBlackoutEvent("macro", "MAITriggerEvent", MAITriggerEvent, OutputCoordinator.HIGH_PRIORITY, 5.0, 2));
 		//returns a count of events occurring in the last secondsAgo seconds matching ALL keys
 		
-		if (RollingWindow.sharedWindow().countAnyEvents(HISTORY_WINDOW, "DOM+COO") >= 3)
+		//if (RollingWindow.sharedWindow().countAnyEvents(HISTORY_WINDOW, "DOM+COO") >= 3)
+		if (RollingWindow.sharedWindow().countAnyEvents(HISTORY_WINDOW, "COO") >= 3)
 		{
 			// Then propose a cognitive trigger
 			 Logger.commonLog(getClass().getSimpleName(), Logger.LOG_NORMAL,

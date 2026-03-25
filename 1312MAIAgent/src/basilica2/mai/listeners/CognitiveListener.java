@@ -55,11 +55,13 @@ public class CognitiveListener implements BasilicaPreProcessor {
 		
 		
 		// this was made according to the logs, but could it also work as "!me.hasAnnotations("DOM", "CON")
-		if (!me.hasAnnotations("DOM") || (!me.hasAnnotations("CONN")))
+//		if (!me.hasAnnotations("DOM") || (!me.hasAnnotations("CONN")))
+//			return;
+		if ((!me.hasAnnotations("CONN")))
 			return;
-		
 		// Add to rolling window
-		RollingWindow.sharedWindow().addEvent(me, "CONN+DOM");
+		//RollingWindow.sharedWindow().addEvent(me, "CONN+DOM");
+		RollingWindow.sharedWindow().addEvent(me, "CONN");
 		Logger.commonLog(getClass().getSimpleName(), Logger.LOG_NORMAL, "Cognitive Event added");
 		Logger.commonLog(getClass().getSimpleName(),Logger.LOG_NORMAL,RollingWindow.sharedWindow().getEvents("CONN+DOM").toString());
 		
@@ -71,7 +73,8 @@ public class CognitiveListener implements BasilicaPreProcessor {
 		// if DOM+CON has been identified more than 3 times in the last 5 minutes
 		
 		//returns a count of events occurring in the last secondsAgo seconds matching ALL keys
-		if (RollingWindow.sharedWindow().countEvents(HISTORY_WINDOW, "CONN+DOM") >= 3)
+//		if (RollingWindow.sharedWindow().countEvents(HISTORY_WINDOW, "CONN+DOM") >= 3)
+		if (RollingWindow.sharedWindow().countEvents(HISTORY_WINDOW, "CONN") >= 3)
 		{
 			// Then propose a cognitive trigger
 			Logger.commonLog(getClass().getSimpleName(), Logger.LOG_NORMAL, "Trigger should fire here!!!");
