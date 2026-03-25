@@ -54,8 +54,6 @@ hmm
 huh
 mmm
 mm
-wait
-but wait
 \b(i\s+(do\s+not|don't|dont)\s+know)\b
 \b(i\s+(am|’m|'m)?\s*not\s+sure)\b
 \b(no\s+idea)\b
@@ -70,6 +68,6 @@ but wait
 \bhow\s+much\b
 \bhow\s+many\b
 ^(uh+|um+|hmm+|mm+|huh+)\b
-well
+well uhs
+wel uhh
 well so
-so

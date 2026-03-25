@@ -1,5 +1,10 @@
 read
 read aloud
+let's read
+case description
+let's go through 
+let's see what it says
+let's see what we have to do
 read the instructions
 follow the instructions
 check the instructions
@@ -11,7 +16,6 @@ make
 write
 note
 measure
-pour
 put
 place
 lower
@@ -44,15 +48,14 @@ who wants to
 can you
 go to
 go get
-go fetch
 go bring
 put it there
 put it here
 put it in
 put it into
 put them
-measure it
 write it down
+write that down
 read this
 read that
 read next
@@ -73,13 +76,6 @@ until
 continue until
 start from
 after measuring
-after heating
-before heating
-thermometer
-beaker
-weights
-water
-ethanol
 container
 tools
 equipment
@@ -91,16 +87,9 @@ everyone
 for everyone
 to everyone
 whole group
-whole classroom
 listen
 attention
 focus
-go to your spot
-to your own group
-all tools
-neatly into
-put away
-clean up
 /\\b(read|measure|pour|put|place|lower|hold|take|bring|fetch|get|give|move|open|close|write|note|explain|describe|investigate|return|carry out)\\b/
 /\\b(let'?s|lets)\\s+\\w+/
 /\\b(we\\s+(need|should|have)\\s+to)\\b/
