@@ -1,4 +1,4 @@
-package basilica2.side.listeners;
+package basilica2.myagent.listeners;
 import java.io.IOException;
 import java.util.*;
 import java.io.File;
@@ -11,7 +11,7 @@ import edu.cmu.cs.lti.basilica2.core.Event;
 import basilica2.side.util.MultipartUtility;
 
 
-public class LightSideMessageAnnotator extends BasilicaAdapter
+public class AnotherAnnotator extends BasilicaAdapter
 {
 	String pathToLightSide; 
 	String modelName; 
@@ -26,7 +26,7 @@ public class LightSideMessageAnnotator extends BasilicaAdapter
     MultipartUtility mUtil; 
     Hashtable<String, Double> classify_dict = new Hashtable<String, Double>();
 	
-	public LightSideMessageAnnotator(Agent a)
+	public AnotherAnnotator(Agent a)
 	{
 		super(a);
 		port = getProperties().getProperty("port", port);
@@ -37,7 +37,7 @@ public class LightSideMessageAnnotator extends BasilicaAdapter
 		predictionCommand = getProperties().getProperty("predictionCommand", predictionCommand);
 		Process process;
 		File lightSideLocation = new File(pathToLightSide);
-		System.err.println("LightSide absolute path: " + lightSideLocation.getAbsolutePath());
+		System.err.println("AnotherAnnotator, LightSide absolute path: " + lightSideLocation.getAbsolutePath());
 		
 		classificationString = getProperties().getProperty("classifications", classificationString);
 		String[] classificationList = classificationString.split(","); 
@@ -54,16 +54,16 @@ public class LightSideMessageAnnotator extends BasilicaAdapter
 						
 			Boolean isAlive = process.isAlive();
 			if (isAlive) {
-				System.err.println("LightSideMessageAnnotator: LightSide process is alive");
+				System.err.println("AnotherAnnotator: LightSide process is alive");
 			}
 			else {
-				System.err.println("LightSideMessageAnnotator: LightSide process is NOT alive");			
+				System.err.println("AnotherAnnotator: LightSide process is NOT alive");			
 			}
 			
 		} 
 		catch (Exception e)
 		{
-			System.err.println("LightSideMessageAnnotator, error starting LightSide");
+			System.err.println("AnotherAnnotator, error starting LightSide");
 			e.printStackTrace();
 		}
 		
@@ -141,7 +141,7 @@ public class LightSideMessageAnnotator extends BasilicaAdapter
 			classificationSpec = classificationList[i].split(withinClassSplit);
 			classification = classificationSpec[0];
 			classificationPercent = Double.parseDouble(classificationSpec[1]);
-			System.err.println("=== LightSideMessageAnnotator - classification " + classification + " " + Double.toString(classificationPercent) + "%");
+			System.err.println("=== AnotherAnnotator - classification " + classification + " " + Double.toString(classificationPercent) + "%");
 			try {
 				classificationThreshold = classify_dict.get(classification);
 				if (classificationPercent >= classificationThreshold) {
@@ -169,7 +169,7 @@ public class LightSideMessageAnnotator extends BasilicaAdapter
 	public static void main(String[] args)
 	{
 		Scanner input = new Scanner(System.in);
-		LightSideMessageAnnotator annotator = new LightSideMessageAnnotator(null);
+		AnotherAnnotator annotator = new AnotherAnnotator(null);
 
 		while (input.hasNext())
 		{
