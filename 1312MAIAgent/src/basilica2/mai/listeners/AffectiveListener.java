@@ -53,11 +53,11 @@ public class AffectiveListener implements BasilicaPreProcessor {
 		
 		
 		// this was made according to the logs, but could it also work as "!me.hasAnnotations("DOM", "CON")
-		if (!me.hasAnnotations("NE"))
+		if (!me.hasAnnotations("NE_L"))
 			return;
 		
 		// Add to rolling window
-		RollingWindow.sharedWindow().addEvent(event,"NE");
+		RollingWindow.sharedWindow().addEvent(event,"NE_L");
 		
 		
 		MAITriggerEvent MAITriggerEvent = new MAITriggerEvent(source, TRIGGER_NAME);
@@ -68,7 +68,7 @@ public class AffectiveListener implements BasilicaPreProcessor {
 		// if DOM+CON has been identified more than 3 times in the last 5 minutes
 		
 		//returns a count of events occurring in the last secondsAgo seconds matching ALL keys
-		if (RollingWindow.sharedWindow().countAnyEvents(HISTORY_WINDOW, "NE") >= 3)
+		if (RollingWindow.sharedWindow().countAnyEvents(HISTORY_WINDOW, "NE_L") >= 3)
 		{
 			// Then propose a cognitive trigger
 			 Logger.commonLog(getClass().getSimpleName(), Logger.LOG_NORMAL,

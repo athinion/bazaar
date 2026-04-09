@@ -55,11 +55,11 @@ public class SocialListener implements BasilicaPreProcessor {
 		
 //		if (!me.hasAnnotations("DOM") || (!me.hasAnnotations("IP")))
 //			return;
-		if (!me.hasAnnotations("IP"))
+		if (!me.hasAnnotations("IP_L"))
 			return;
 		// Add to rolling window
 		//RollingWindow.sharedWindow().addEvent(me, "DOM+IP");
-		RollingWindow.sharedWindow().addEvent(me, "IP");
+		RollingWindow.sharedWindow().addEvent(me, "IP_L");
 		
 		MAITriggerEvent MAITriggerEvent = new MAITriggerEvent(source, TRIGGER_NAME);
       	System.err.println("SocialListener, execute - MAITriggerEvent created");
@@ -69,7 +69,7 @@ public class SocialListener implements BasilicaPreProcessor {
 		
 		//returns a count of events occurring in the last secondsAgo seconds matching ALL keys
 //		if (RollingWindow.sharedWindow().countAnyEvents(HISTORY_WINDOW, "DOM+IP") >= 3)
-		if (RollingWindow.sharedWindow().countAnyEvents(HISTORY_WINDOW, "IP") >= 3)
+		if (RollingWindow.sharedWindow().countAnyEvents(HISTORY_WINDOW, "IP_L") >= 3)
 		{
 			// Then propose a cognitive trigger
 			 Logger.commonLog(getClass().getSimpleName(), Logger.LOG_NORMAL,

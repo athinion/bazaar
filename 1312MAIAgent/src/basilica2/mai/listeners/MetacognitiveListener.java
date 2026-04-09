@@ -59,12 +59,12 @@ public class MetacognitiveListener implements BasilicaPreProcessor {
 		
 //		if (!me.hasAnnotations("DOM") || (!me.hasAnnotations("COO")))
 //			return;
-		if (!me.hasAnnotations("COO"))
+		if (!me.hasAnnotations("COO_L"))
 			return;
 		
 		// Add to rolling window
 		//RollingWindow.sharedWindow().addEvent(me, "DOM+COO");
-		RollingWindow.sharedWindow().addEvent(me, "COO");
+		RollingWindow.sharedWindow().addEvent(me, "COO_L");
 		// if DOM+COO has been identified more than 3 times in the last 5 minutes
 		Logger.commonLog(getClass().getSimpleName(), Logger.LOG_NORMAL, "Metacognitive Event added");
 		
@@ -76,7 +76,7 @@ public class MetacognitiveListener implements BasilicaPreProcessor {
 		//returns a count of events occurring in the last secondsAgo seconds matching ALL keys
 		
 		//if (RollingWindow.sharedWindow().countAnyEvents(HISTORY_WINDOW, "DOM+COO") >= 3)
-		if (RollingWindow.sharedWindow().countAnyEvents(HISTORY_WINDOW, "COO") >= 3)
+		if (RollingWindow.sharedWindow().countAnyEvents(HISTORY_WINDOW, "COO_L") >= 3)
 		{
 			// Then propose a cognitive trigger
 			 Logger.commonLog(getClass().getSimpleName(), Logger.LOG_NORMAL,

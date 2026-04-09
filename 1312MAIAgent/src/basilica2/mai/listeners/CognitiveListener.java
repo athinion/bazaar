@@ -57,13 +57,13 @@ public class CognitiveListener implements BasilicaPreProcessor {
 		// this was made according to the logs, but could it also work as "!me.hasAnnotations("DOM", "CON")
 //		if (!me.hasAnnotations("DOM") || (!me.hasAnnotations("CONN")))
 //			return;
-		if ((!me.hasAnnotations("CONN")))
+		if ((!me.hasAnnotations("CONN_L")))
 			return;
 		// Add to rolling window
 		//RollingWindow.sharedWindow().addEvent(me, "CONN+DOM");
-		RollingWindow.sharedWindow().addEvent(me, "CONN");
+		RollingWindow.sharedWindow().addEvent(me, "CONN_L");
 		Logger.commonLog(getClass().getSimpleName(), Logger.LOG_NORMAL, "Cognitive Event added");
-		Logger.commonLog(getClass().getSimpleName(),Logger.LOG_NORMAL,RollingWindow.sharedWindow().getEvents("CONN+DOM").toString());
+		Logger.commonLog(getClass().getSimpleName(),Logger.LOG_NORMAL,RollingWindow.sharedWindow().getEvents("CONN_L").toString());
 		
 		MAITriggerEvent MAITriggerEvent = new MAITriggerEvent(source, TRIGGER_NAME);
       	System.err.println("CognitiveListener, execute - MAITriggerEvent created");
@@ -74,7 +74,7 @@ public class CognitiveListener implements BasilicaPreProcessor {
 		
 		//returns a count of events occurring in the last secondsAgo seconds matching ALL keys
 //		if (RollingWindow.sharedWindow().countEvents(HISTORY_WINDOW, "CONN+DOM") >= 3)
-		if (RollingWindow.sharedWindow().countEvents(HISTORY_WINDOW, "CONN") >= 3)
+		if (RollingWindow.sharedWindow().countEvents(HISTORY_WINDOW, "CONN_L") >= 3)
 		{
 			// Then propose a cognitive trigger
 			Logger.commonLog(getClass().getSimpleName(), Logger.LOG_NORMAL, "Trigger should fire here!!!");
